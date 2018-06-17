@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.frxs.merchant.core.mapper.StoreContactsMapper">
+  <resultMap id="BaseResultMap" type="com.frxs.merchant.common.dal.entity.StoreContacts">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="contactsName" jdbcType="VARCHAR" property="contactsName" />
+    <result column="contactsTel" jdbcType="VARCHAR" property="contactsTel" />
+    <result column="storeId" jdbcType="BIGINT" property="storeId" />
+    <result column="orderNumber" jdbcType="INTEGER" property="orderNumber" />
+    <result column="createUserId" jdbcType="BIGINT" property="createUserId" />
+    <result column="createUserName" jdbcType="VARCHAR" property="createUserName" />
+    <result column="modifyUserId" jdbcType="BIGINT" property="modifyUserId" />
+    <result column="modifyUserName" jdbcType="VARCHAR" property="modifyUserName" />
+    <result column="tmCreate" jdbcType="TIMESTAMP" property="tmCreate" />
+    <result column="tmSmp" jdbcType="TIMESTAMP" property="tmSmp" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id,contactsName,contactsTel,storeId,orderNumber, createUserId,
+    createUserName, modifyUserId, modifyUserName, tmCreate, tmSmp
+  </sql>
+  <select id="getContactsByStoreId" parameterType="java.lang.Long" resultType="com.frxs.merchant.common.dal.entity.StoreContacts">
+    select
+    <include refid="Base_Column_List" />
+    from t_store_contacts
+    where storeId = #{storeId,jdbcType=BIGINT} order by orderNumber desc
+  </select>
+
+  <select id="getContactsLikeNameOrTel" parameterType="java.lang.String" resultType="com.frxs.merchant.common.dal.entity.StoreContacts">
+    select
+    <include refid="Base_Column_List" />
+    from t_store_contacts
+    where contactsName like CONCAT('%',#{value},'%') or contactsTel like CONCAT('%',#{value},'%')
+  </select>
+</mapper>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.frxs.merchant.core.mapper.ProductTempletDescMapper">
+  <resultMap id="BaseResultMap" type="com.frxs.merchant.common.dal.entity.ProductTempletDesc">
+    <id column="templetId" jdbcType="BIGINT" property="templetId" />
+    <result column="briefDesc" jdbcType="VARCHAR" property="briefDesc" />
+    <result column="createUserId" jdbcType="BIGINT" property="createUserId" />
+    <result column="createUserName" jdbcType="VARCHAR" property="createUserName" />
+    <result column="modifyUserId" jdbcType="BIGINT" property="modifyUserId" />
+    <result column="modifyUserName" jdbcType="VARCHAR" property="modifyUserName" />
+    <result column="tmCreate" jdbcType="TIMESTAMP" property="tmCreate" />
+    <result column="tmSmp" jdbcType="TIMESTAMP" property="tmSmp" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.frxs.merchant.common.dal.entity.ProductTempletDesc">
+    <result column="detailDesc" jdbcType="LONGVARCHAR" property="detailDesc" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    templetId, briefDesc, createUserId, createUserName, modifyUserId, modifyUserName, 
+    tmCreate, tmSmp
+  </sql>
+  <sql id="Blob_Column_List">
+    detailDesc
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from t_product_templet_desc
+    where templetId = #{templetId,jdbcType=BIGINT}
+  </select>
+</mapper>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.frxs.merchant.core.mapper.OrgAreaMapper">
+  <resultMap id="BaseResultMap" type="com.frxs.merchant.common.dal.entity.OrgArea">
+    <id column="orgAreaId" jdbcType="INTEGER" property="orgAreaId" />
+    <result column="orgAreaName" jdbcType="VARCHAR" property="orgAreaName" />
+    <result column="orgAreaFullName" jdbcType="VARCHAR" property="orgAreaFullName" />
+    <result column="level" jdbcType="INTEGER" property="level" />
+    <result column="parentId" jdbcType="INTEGER" property="parentId" />
+    <result column="SortId" jdbcType="INTEGER" property="sortId" />
+    <result column="modifyUserId" jdbcType="BIGINT" property="modifyUserId" />
+    <result column="modifyUserName" jdbcType="VARCHAR" property="modifyUserName" />
+    <result column="createUserId" jdbcType="BIGINT" property="createUserId" />
+    <result column="createUserName" jdbcType="VARCHAR" property="createUserName" />
+    <result column="tmCreate" jdbcType="TIMESTAMP" property="tmCreate" />
+    <result column="tmSmp" jdbcType="TIMESTAMP" property="tmSmp" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    orgAreaId, orgAreaName, orgAreaFullName, level, parentId, SortId, modifyUserId, modifyUserName, 
+    createUserId, createUserName, tmCreate, tmSmp
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_org_area
+    where orgAreaId = #{orgAreaId,jdbcType=INTEGER}
+  </select>
+  <select id="getByParentId" resultType="com.frxs.merchant.common.dal.entity.OrgArea" parameterType="java.lang.Integer">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM t_org_area
+    WHERE parentId = #{parentId}
+  </select>
+
+</mapper>

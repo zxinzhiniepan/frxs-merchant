@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>merchant</artifactId>
+        <groupId>com.frxs.merchant</groupId>
+        <version>1.0.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>merchant-core-service</artifactId>
+    <version>${module.version}</version>
+    <packaging>jar</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <version>1.5.9.RELEASE</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.frxs.merchant</groupId>
+            <artifactId>merchant-common-dal</artifactId>
+            <version>${module.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.frxs.merchant</groupId>
+            <artifactId>merchant-common-integration</artifactId>
+            <version>${module.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.frxs.merchant</groupId>
+            <artifactId>merchant-common-util</artifactId>
+            <version>${module.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.frxs.merchant</groupId>
+            <artifactId>merchant-service-api</artifactId>
+            <version>${module.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.frxs.promotion</groupId>
+            <artifactId>promotion-service-api</artifactId>
+            <version>${frxs.promotion.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <version>1.5.9.RELEASE</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.frxs.trade</groupId>
+            <artifactId>trade-service-api</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <!-- 用户平台 核心API -->
+        <dependency>
+            <groupId>com.frxs.user</groupId>
+            <artifactId>user-service-api</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.frxs.user</groupId>
+            <artifactId>user-common-dal</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <!--资金平台 核心api-->
+        <dependency>
+            <groupId>com.frxs.fund</groupId>
+            <artifactId>fund-service-api</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>${druid.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid-spring-boot-starter</artifactId>
+            <version>${druid.springboot.version}</version>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <!-- entity生成器 -->
+            <plugin>
+                <groupId>org.mybatis.generator</groupId>
+                <artifactId>mybatis-generator-maven-plugin</artifactId>
+                <version>1.3.5</version>
+                <configuration>
+                    <verbose>true</verbose>
+                    <overwrite>true</overwrite>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.frxs.merchant.core.mapper.ProductInfoMapper">
+  <resultMap id="BaseResultMap" type="com.frxs.merchant.common.dal.entity.ProductInfo">
+    <id column="productInfoId" jdbcType="BIGINT" property="productInfoId" />
+    <result column="areaId" jdbcType="BIGINT" property="areaId" />
+    <result column="templetId" jdbcType="BIGINT" property="templetId" />
+    <result column="isCreateTemplet" jdbcType="VARCHAR" property="isCreateTemplet" />
+    <result column="totalStock" jdbcType="DECIMAL" property="totalStock" />
+    <result column="productName" jdbcType="VARCHAR" property="productName" />
+    <result column="productTitle" jdbcType="VARCHAR" property="productTitle" />
+    <result column="yieldly" jdbcType="VARCHAR" property="yieldly" />
+    <result column="brandId" jdbcType="BIGINT" property="brandId" />
+    <result column="brandName" jdbcType="VARCHAR" property="brandName" />
+    <result column="createUserId" jdbcType="BIGINT" property="createUserId" />
+    <result column="createUserName" jdbcType="VARCHAR" property="createUserName" />
+    <result column="modifyUserId" jdbcType="BIGINT" property="modifyUserId" />
+    <result column="modifyUserName" jdbcType="VARCHAR" property="modifyUserName" />
+    <result column="tmCreate" jdbcType="TIMESTAMP" property="tmCreate" />
+    <result column="tmSmp" jdbcType="TIMESTAMP" property="tmSmp" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    productInfoId, areaId, templetId, isCreateTemplet, totalStock, productName, productTitle, 
+    yieldly, brandId, brandName, createUserId, createUserName, modifyUserId, modifyUserName, 
+    tmCreate, tmSmp
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_product_info
+    where productInfoId = #{productInfoId,jdbcType=BIGINT}
+  </select>
+</mapper>

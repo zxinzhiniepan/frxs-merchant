@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.frxs.merchant.core.mapper.OrgAreaViewMapper">
+  <resultMap id="BaseResultMap" type="com.frxs.merchant.common.dal.entity.OrgAreaView">
+    <id column="provinceId" jdbcType="INTEGER" property="provinceId" />
+    <result column="provinceName" jdbcType="VARCHAR" property="provinceName" />
+    <result column="cityId" jdbcType="INTEGER" property="cityId" />
+    <result column="cityName" jdbcType="VARCHAR" property="cityName" />
+    <result column="countyId" jdbcType="INTEGER" property="countyId" />
+    <result column="countyName" jdbcType="VARCHAR" property="countyName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    provinceId, provinceName, cityId, cityName, countyId, countyName
+  </sql>
+  <select id="getByOrgAreaName" resultType="com.frxs.merchant.common.dal.entity.OrgAreaView" parameterType="com.frxs.merchant.common.dal.entity.OrgAreaView">
+    select
+    <include refid="Base_Column_List" />
+    from v_org_area a
+     where a.provinceName = #{provinceName}
+     and a.cityName = #{cityName}
+     and a.countyName = #{countyName}
+  </select>
+</mapper>

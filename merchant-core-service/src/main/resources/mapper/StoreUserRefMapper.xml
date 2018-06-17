@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.frxs.merchant.core.mapper.StoreUserRefMapper">
+  <resultMap id="BaseResultMap" type="com.frxs.merchant.common.dal.entity.StoreUserRef">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="userId" jdbcType="BIGINT" property="userId" />
+    <result column="storeId" jdbcType="BIGINT" property="storeId" />
+    <result column="userName" jdbcType="VARCHAR" property="userName" />
+    <result column="isDeleted" jdbcType="CHAR" property="isDeleted" />
+    <result column="tmCreate" jdbcType="TIMESTAMP" property="tmCreate" />
+    <result column="tmSmp" jdbcType="TIMESTAMP" property="tmSmp" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, userId, storeId, userName, isDeleted, tmCreate, tmSmp
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_store_user_ref
+    where id = #{id}
+  </select>
+  <select id="getByStoreIds" resultType="com.frxs.merchant.common.dal.entity.StoreUserRef">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM t_store_user_ref
+    WHERE 1=1
+    <if test="storeIds != null and storeIds.size > 0"></if>
+      AND storeId IN
+      <foreach collection="storeIds" item="storeId" index="index"
+        open="(" close=")" separator=",">
+        #{storeId}
+      </foreach>
+  </select>
+</mapper>

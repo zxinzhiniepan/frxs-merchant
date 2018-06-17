@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>merchant</artifactId>
+        <groupId>com.frxs.merchant</groupId>
+        <version>1.0.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>merchant-common-dal</artifactId>
+    <version>${module.version}</version>
+    <packaging>jar</packaging>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>com.frxs.framework</groupId>
+            <artifactId>frxsframework-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.frxs.framework</groupId>
+            <artifactId>frxsframework-util</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.frxs.framework</groupId>
+            <artifactId>frxsframework-data</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.frxs.framework</groupId>
+            <artifactId>frxsframework-common</artifactId>
+        </dependency>
+
+    </dependencies>
+
+</project>

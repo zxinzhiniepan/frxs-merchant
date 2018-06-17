@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.frxs.merchant.core.mapper.ProductVendorDataImgMapper">
+  <resultMap id="BaseResultMap" type="com.frxs.merchant.common.dal.entity.ProductVendorDataImg">
+    <id column="vendorProductImgId" jdbcType="BIGINT" property="vendorProductImgId" />
+    <result column="vendorProductDataId" jdbcType="BIGINT" property="vendorProductDataId" />
+    <result column="originalImgUrl" jdbcType="VARCHAR" property="originalImgUrl" />
+    <result column="imgUrl60" jdbcType="VARCHAR" property="imgUrl60" />
+    <result column="imgUrl120" jdbcType="VARCHAR" property="imgUrl120" />
+    <result column="imgUrl200" jdbcType="VARCHAR" property="imgUrl200" />
+    <result column="imgUrl400" jdbcType="VARCHAR" property="imgUrl400" />
+    <result column="sortSeq" jdbcType="INTEGER" property="sortSeq" />
+    <result column="createUserId" jdbcType="BIGINT" property="createUserId" />
+    <result column="createUserName" jdbcType="VARCHAR" property="createUserName" />
+    <result column="modifyUserId" jdbcType="BIGINT" property="modifyUserId" />
+    <result column="modifyUserName" jdbcType="VARCHAR" property="modifyUserName" />
+    <result column="tmCreate" jdbcType="TIMESTAMP" property="tmCreate" />
+    <result column="tmSmp" jdbcType="TIMESTAMP" property="tmSmp" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    vendorProductImgId, vendorProductDataId, originalImgUrl, imgUrl60, imgUrl120, imgUrl200,
+    imgUrl400, sortSeq,createUserId, createUserName, modifyUserId, modifyUserName, tmCreate,
+    tmSmp
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_product_vendor_data_img
+    where vendorProductImgId = #{vendorProductImgId,jdbcType=BIGINT}
+  </select>
+
+  <select id="selectVendorDataImgByCondition" parameterType="Map" resultMap="BaseResultMap">
+    select
+    a.vendorProductImgId vendorProductImgId, a.vendorProductDataId vendorProductDataId, a.originalImgUrl originalImgUrl,
+    a.imgUrl60 imgUrl60, a.imgUrl120 imgUrl120, a.imgUrl200 imgUrl200,
+    a.imgUrl400 imgUrl400, a.sortSeq sortSeq,a.createUserId createUserId, a.createUserName createUserName,
+    a.modifyUserId modifyUserId, a.modifyUserName modifyUserName, a.tmCreate tmCreate, a.tmSmp tmSmp
+    from t_product_vendor_data_img a
+    <if test="vendorId!= null and vendorId != '' ">
+     INNER JOIN t_product_vendor_data b on a.vendorProductDataId =b.vendorProductDataId
+      and b.isVendorDel='FALSE' and b.isAreaDel ='FALSE'
+      and b.vendorId =#{vendorId,jdbcType=BIGINT}
+      <if test="auditStatus != null and auditStatus == false ">
+        AND b.auditStatus = 'DRAFT'
+      </if>
+      <if test="auditStatus != null and auditStatus == true ">
+        AND b.auditStatus in('PENDING','PASS','REJECT')
+      </if>
+    </if>
+    where 1=1
+    <if test="vendorId!= null and vendorId!= '' ">
+      and a.sortSeq = 1
+    </if>
+    <if test="vendorProductDataId!= null and vendorProductDataId!= '' ">
+      and a.vendorProductDataId =#{vendorProductDataId,jdbcType=BIGINT}
+    </if>
+    ORDER BY a.sortSeq ASC
+  </select>
+
+</mapper>

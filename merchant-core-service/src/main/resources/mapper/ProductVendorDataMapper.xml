@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.frxs.merchant.core.mapper.ProductVendorDataMapper">
+  <resultMap id="BaseResultMap" type="com.frxs.merchant.common.dal.entity.ProductVendorData">
+    <id column="vendorProductDataId" jdbcType="BIGINT" property="vendorProductDataId"/>
+    <result column="vendorId" jdbcType="BIGINT" property="vendorId"/>
+    <result column="vendorCode" jdbcType="VARCHAR" property="vendorCode"/>
+    <result column="vendorName" jdbcType="VARCHAR" property="vendorName"/>
+    <result column="vendorProductName" jdbcType="VARCHAR" property="vendorProductName"/>
+    <result column="vendorProductDesc" jdbcType="VARCHAR" property="vendorProductDesc"/>
+    <result column="tmPublish" jdbcType="TIMESTAMP" property="tmPublish"/>
+    <result column="auditStatus" jdbcType="VARCHAR" property="auditStatus"/>
+    <result column="auditUserId" jdbcType="BIGINT" property="auditUserId"/>
+    <result column="auditUserName" jdbcType="VARCHAR" property="auditUserName"/>
+    <result column="auditRession" jdbcType="VARCHAR" property="auditRession"/>
+    <result column="tmAudit" jdbcType="TIMESTAMP" property="tmAudit"/>
+    <result column="specType" jdbcType="VARCHAR" property="specType"/>
+    <result column="isAreaDel" jdbcType="VARCHAR" property="isAreaDel"/>
+    <result column="isVendorDel" jdbcType="VARCHAR" property="isVendorDel"/>
+    <result column="createUserId" jdbcType="BIGINT" property="createUserId"/>
+    <result column="createUserName" jdbcType="VARCHAR" property="createUserName"/>
+    <result column="modifyUserId" jdbcType="BIGINT" property="modifyUserId"/>
+    <result column="modifyUserName" jdbcType="VARCHAR" property="modifyUserName"/>
+    <result column="tmCreate" jdbcType="TIMESTAMP" property="tmCreate"/>
+    <result column="tmSmp" jdbcType="TIMESTAMP" property="tmSmp"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    vendorProductDataId, vendorId, vendorCode, vendorName, vendorProductName, vendorProductDesc, 
+    tmPublish, auditStatus, auditUserId, auditUserName, auditRession,tmAudit, specType, isAreaDel,
+    isVendorDel, createUserId, createUserName, modifyUserId, modifyUserName, tmCreate, 
+    tmSmp
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from t_product_vendor_data
+    where vendorProductDataId = #{vendorProductDataId,jdbcType=BIGINT}
+  </select>
+
+  <select id="selectDataById" parameterType="Map" resultType="com.frxs.merchant.common.dal.entity.ProductVendorData">
+    select
+    <include refid="Base_Column_List"/>
+    from t_product_vendor_data
+    where isVendorDel='FALSE' and isAreaDel ='FALSE'
+    <if test="vendorProductDataId != null and vendorProductDataId != '' ">
+      and vendorProductDataId = #{vendorProductDataId,jdbcType=BIGINT}
+    </if>
+  </select>
+
+  <select id="selectVendorDataList" parameterType="Map" resultType="com.frxs.merchant.common.dal.entity.ProductVendorData">
+    select
+    <include refid="Base_Column_List"/>
+    from t_product_vendor_data
+    <where>
+      `vendorProductDataId` in
+      <foreach collection="vendorProductDataIds" item="id" open="(" separator="," close=")">
+        #{id,jdbcType=BIGINT}
+      </foreach>
+    </where>
+  </select>
+
+  <insert id="insertProductVendorData" parameterType="com.frxs.merchant.common.dal.entity.ProductVendorData" useGeneratedKeys="true" keyProperty="vendorProductDataId">
+    INSERT INTO t_product_vendor_data(
+    vendorProductDataId,
+    vendorId,
+    vendorCode,
+    vendorName,
+    vendorProductName,
+    vendorProductDesc,
+    tmPublish,
+    auditStatus,
+    auditUserId,
+    auditUserName,
+    tmAudit,
+    specType,
+    isAreaDel,
+    isVendorDel,
+    createUserId,
+    createUserName,
+    modifyUserId,
+    modifyUserName,
+    tmCreate,
+    tmSmp
+    )
+    VALUES (
+    #{vendorProductDataId},
+    #{vendorId},
+    #{vendorCode},
+    #{vendorName},
+    #{vendorProductName},
+    #{vendorProductDesc},
+    #{tmPublish},
+    #{auditStatus},
+    #{auditUserId},
+    #{auditUserName},
+    #{tmAudit},
+    #{specType},
+    #{isAreaDel},
+    #{isVendorDel},
+    #{createUserId},
+    #{createUserName},
+    #{modifyUserId},
+    #{modifyUserName},
+    #{tmCreate},
+    #{tmSmp}
+    )
+  </insert>
+
+  <select id="countProductVendorList" parameterType="java.util.Map" resultType="java.lang.Integer">
+    SELECT COUNT(1) FROM t_product_vendor_data
+    <include refid="productVendorWhere"/>
+  </select>
+
+
+  <select id="productVendorList" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from t_product_vendor_data
+    <include refid="productVendorWhere"/>
+    ORDER BY tmSmp DESC
+    LIMIT #{pageNo},#{pageSize}
+  </select>
+
+  <sql id="productVendorWhere">
+    <where>
+      isVendorDel='FALSE'
+      <if test="query.vendorId != null ">
+        AND vendorId = #{query.vendorId,jdbcType=BIGINT}
+      </if>
+      <if test="query.auditStatus == false ">
+        AND auditStatus in ('REJECT','DRAFT')
+      </if>
+      <if test="query.auditStatus == true ">
+        AND auditStatus in('PENDING','PASS')
+      </if>
+    </where>
+  </sql>
+
+
+  <update id="updateAreaDel" parameterType="Map" statementType="PREPARED">
+    UPDATE t_product_vendor_data SET
+    isAreaDel = 'TRUE',
+    modifyUserId = #{operateId,jdbcType=BIGINT},
+    modifyUserName = #{operateName}
+    <where>
+      `vendorProductDataId` in
+      <foreach collection="vendorProductDataIds" item="id" open="(" separator="," close=")">
+        #{id,jdbcType=BIGINT}
+      </foreach>
+    </where>
+  </update>
+
+  <update id="updateVendorDel" parameterType="Map" statementType="PREPARED">
+    UPDATE t_product_vendor_data SET
+    isVendorDel = 'TRUE',
+    modifyUserId = #{operateId,jdbcType=BIGINT},
+    modifyUserName = #{operateName}
+    <where>
+      <if test="vendorProductDataId != null and vendorProductDataId != '' ">
+        AND vendorProductDataId = #{vendorProductDataId,jdbcType=BIGINT}
+      </if>
+    </where>
+  </update>
+
+  <update id="updateAuditStatus" parameterType="Map" statementType="PREPARED">
+    UPDATE t_product_vendor_data SET
+    auditStatus =#{auditStatus}
+    <if test="operateId != null">
+      ,auditUserId = #{operateId,jdbcType=BIGINT}
+    </if>
+    <if test="operateName != null and operateName != ''">
+      ,auditUserName = #{operateName}
+    </if>
+    <if test="auditRession != null and auditRession !='' ">
+      ,auditRession = #{auditRession}
+    </if>
+    <where>
+      `vendorProductDataId` in
+      <foreach collection="vendorProductDataIds" item="id" open="(" separator="," close=")">
+        #{id,jdbcType=BIGINT}
+      </foreach>
+    </where>
+  </update>
+
+
+  <select id="countProductVendorDataList" parameterType="java.util.Map" resultType="java.lang.Integer">
+    SELECT COUNT(1) FROM t_product_vendor_data a
+    <include refid="productVendorDataWhere"/>
+  </select>
+
+  <select id="productVendorDataList" parameterType="java.util.Map" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM t_product_vendor_data a
+    <include refid="productVendorDataWhere"/>
+    ORDER BY a.tmSmp DESC
+    LIMIT #{pageNo},#{pageSize}
+  </select>
+
+  <sql id="productVendorDataWhere">
+    <where>
+      isAreaDel ='FALSE' AND auditStatus != 'DRAFT'
+      <if test="productVendorDataQueryDto.vendorCode != null and productVendorDataQueryDto.vendorCode != ''">
+        AND a.vendorCode like concat('%',#{productVendorDataQueryDto.vendorCode},'%')
+      </if>
+      <if test="productVendorDataQueryDto.vendorName != null and productVendorDataQueryDto.vendorName != ''">
+        AND a.vendorName LIKE concat('%',#{productVendorDataQueryDto.vendorName},'%')
+      </if>
+      <if test="productVendorDataQueryDto.vendorProductName != null and productVendorDataQueryDto.vendorProductName != ''">
+        AND a.vendorProductName LIKE concat('%',#{productVendorDataQueryDto.vendorProductName},'%')
+      </if>
+      <if test="productVendorDataQueryDto.tmPublishStart != null">
+        AND a.tmPublish >= #{productVendorDataQueryDto.tmPublishStart}
+      </if>
+      <if test="productVendorDataQueryDto.tmPublishEnd != null ">
+        AND a.tmPublish &lt;= #{productVendorDataQueryDto.tmPublishEnd}
+      </if>
+      <if test="productVendorDataQueryDto.auditStatus != null and productVendorDataQueryDto.auditStatus != ''">
+        AND a.auditStatus = #{productVendorDataQueryDto.auditStatus}
+      </if>
+      <if test="productVendorDataQueryDto.areaId != null">
+        AND EXISTS (SELECT ar.id FROM t_vendor_area_ref ar WHERE ar.vendorId = a.vendorId AND ar.areaId = #{productVendorDataQueryDto.areaId} AND ar.IsDeleted = 'N')
+      </if>
+    </where>
+  </sql>
+
+</mapper>

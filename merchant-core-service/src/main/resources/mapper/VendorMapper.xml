@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.frxs.merchant.core.mapper.VendorMapper">
+  <resultMap id="BaseResultMap" type="com.frxs.merchant.common.dal.entity.Vendor">
+    <id column="vendorId" jdbcType="BIGINT" property="vendorId"/>
+    <result column="vendorCode" jdbcType="VARCHAR" property="vendorCode"/>
+    <result column="vendorName" jdbcType="VARCHAR" property="vendorName"/>
+    <result column="vendorShortName" jdbcType="VARCHAR" property="vendorShortName"/>
+    <result column="provinceId" jdbcType="INTEGER" property="provinceId"/>
+    <result column="cityId" jdbcType="INTEGER" property="cityId"/>
+    <result column="countyId" jdbcType="INTEGER" property="countyId"/>
+    <result column="address" jdbcType="VARCHAR" property="address"/>
+    <result column="contacts" jdbcType="VARCHAR" property="contacts"/>
+    <result column="contactsTel" jdbcType="VARCHAR" property="contactsTel"/>
+    <result column="vendorStatus" jdbcType="VARCHAR" property="vendorStatus"/>
+    <result column="vendorLogo" jdbcType="VARCHAR" property="vendorLogo"/>
+    <result column="legalPeople" jdbcType="VARCHAR" property="legalPeople"/>
+    <result column="vendorArea" jdbcType="VARCHAR" property="vendorArea"/>
+    <result column="busiLicenseFullName" jdbcType="VARCHAR" property="busiLicenseFullName"/>
+    <result column="foodCirculationLicense" jdbcType="VARCHAR" property="foodCirculationLicense"/>
+    <result column="bankAccountName" jdbcType="VARCHAR" property="bankAccountName"/>
+    <result column="bankName" jdbcType="VARCHAR" property="bankName"/>
+    <result column="bankAccountNo" jdbcType="VARCHAR" property="bankAccountNo"/>
+    <result column="busiLicenseFullNameImgSrc" jdbcType="VARCHAR"
+      property="busiLicenseFullNameImgSrc"/>
+    <result column="foodCirculationLicenseImgSrc" jdbcType="VARCHAR"
+      property="foodCirculationLicenseImgSrc"/>
+    <result column="createAreaId" jdbcType="INTEGER" property="createAreaId"/>
+    <result column="bankNo" jdbcType="VARCHAR" property="bankNo"/>
+    <result column="unionPayMID" jdbcType="VARCHAR" property="unionPayMID"/>
+    <result column="unionPayCID" jdbcType="VARCHAR" property="unionPayCID"/>
+    <result column="createUserId" jdbcType="BIGINT" property="createUserId"/>
+    <result column="createUserName" jdbcType="VARCHAR" property="createUserName"/>
+    <result column="modifyUserId" jdbcType="BIGINT" property="modifyUserId"/>
+    <result column="modifyUserName" jdbcType="VARCHAR" property="modifyUserName"/>
+    <result column="tmCreate" jdbcType="TIMESTAMP" property="tmCreate"/>
+    <result column="tmSmp" jdbcType="TIMESTAMP" property="tmSmp"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    vendorId, vendorCode, vendorName, vendorShortName, provinceId, cityId, countyId,
+    address, contacts, contactsTel, vendorStatus, vendorLogo, legalPeople, vendorArea, 
+    busiLicenseFullName, foodCirculationLicense, bankAccountName, bankName, bankAccountNo, 
+    busiLicenseFullNameImgSrc, foodCirculationLicenseImgSrc, createAreaId, bankNo, unionPayMID, 
+    unionPayCID, createUserId, createUserName, modifyUserId, modifyUserName, tmCreate, 
+    tmSmp
+  </sql>
+
+  <sql id="Base_Column_List_Alias">
+   	v.vendorId,
+    v.vendorCode,
+    v.vendorName,
+    v.vendorShortName,
+    v.provinceId,
+    v.cityId,
+    v.countyId,
+    v.address,
+    v.contacts,
+    v.contactsTel,
+    v.vendorStatus,
+    v.vendorLogo,
+    v.legalPeople,
+    v.vendorArea,
+    v.busiLicenseFullName,
+    v.foodCirculationLicense,
+    v.bankAccountName,
+    v.bankName,
+    v.bankAccountNo,
+    v.busiLicenseFullNameImgSrc,
+    v.foodCirculationLicenseImgSrc,
+    v.createAreaId,
+    v.bankNo,
+    v.unionPayMID,
+    v.unionPayCID,
+    v.createUserId,
+    v.createUserName,
+    v.modifyUserId,
+    v.modifyUserName,
+    v.tmCreate,
+    v.tmSmp
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from t_vendor
+    where vendorId = #{vendorId}
+  </select>
+
+  <select id="getPageList" resultType="com.frxs.merchant.common.dal.entity.VendorQy">
+    SELECT DISTINCT
+    v.vendorId,
+    v.vendorCode,
+    v.vendorName,
+    v.vendorShortName,
+    v.address,
+    v.contacts,
+    v.contactsTel,
+    v.vendorStatus,
+    (SELECT COUNT(1) FROM t_product p WHERE v.vendorId = p.vendorId AND p.skuStatus IN ('UP','DOWN')
+    <if test="vendorPageRequest.areaId !=null and vendorPageRequest.areaId != 0">
+      AND p.areaId = #{vendorPageRequest.areaId}
+    </if>) productCount,
+    (SELECT GROUP_CONCAT(vt.vendorTypeName) FROM t_vendor_type vt INNER JOIN t_vendor_type_ref vtf ON vt.vendorTypeId = vtf.vendorTypeId WHERE vtf.vendorId = v.vendorId) vendorTypeName,
+    (SELECT GROUP_CONCAT(a.areaName) FROM t_area a INNER JOIN	t_vendor_area_ref var ON a.areaId = var.areaId WHERE var.vendorId = v.vendorId AND var.isDeleted = 'N') areaName
+    FROM t_vendor v
+    INNER JOIN t_vendor_type_ref vtf ON v.vendorId = vtf.vendorId
+    INNER JOIN t_vendor_area_ref var ON v.vendorId = var.vendorId
+    WHERE v.vendorStatus != 'DELETE'
+    AND v.vendorCode != '9999999'
+    <if test="vendorPageRequest.vendorTypeId != null">
+      AND vtf.vendorTypeId = #{vendorPageRequest.vendorTypeId}
+    </if>
+    <if test="vendorPageRequest.vendorName != null and vendorPageRequest.vendorName != ''">
+      AND v.vendorName LIKE CONCAT('%',#{vendorPageRequest.vendorName},'%')
+    </if>
+    <if test="vendorPageRequest.vendorCode != null and vendorPageRequest.vendorCode != ''">
+      AND v.vendorCode LIKE CONCAT('%',#{vendorPageRequest.vendorCode},'%')
+    </if>
+    <if test="vendorPageRequest.provinceId != null and vendorPageRequest.provinceId != 0">
+      AND v.provinceId = #{vendorPageRequest.provinceId}
+    </if>
+    <if test="vendorPageRequest.cityId != null and vendorPageRequest.cityId != 0">
+      AND v.cityId = #{vendorPageRequest.cityId}
+    </if>
+    <if test="vendorPageRequest.countyId !=null and vendorPageRequest.countyId != 0">
+      AND v.countyId = #{vendorPageRequest.countyId}
+    </if>
+    <if test="vendorPageRequest.areaId !=null and vendorPageRequest.areaId != 0">
+      AND var.areaId = #{vendorPageRequest.areaId}
+      AND var.isDeleted = 'N'
+    </if>
+    <if test="vendorPageRequest.vendorStatus != null and vendorPageRequest.vendorStatus != '' and vendorPageRequest.vendorStatus != 'DELETE'">
+      AND v.vendorStatus = #{vendorPageRequest.vendorStatus}
+    </if>
+    ORDER BY v.vendorId DESC
+  </select>
+  <select id="getCount" resultType="java.lang.Integer">
+    SELECT
+    COUNT(DISTINCT v.vendorId)
+    FROM t_vendor v
+    INNER JOIN t_vendor_type_ref vtf ON v.vendorId = vtf.vendorId
+    INNER JOIN t_vendor_area_ref var ON v.vendorId = var.vendorId
+    WHERE v.vendorStatus != 'DELETE'
+    AND v.vendorCode != '9999999'
+    <if test="vendorPageRequest.vendorTypeId != null">
+      AND vtf.vendorTypeId = #{vendorPageRequest.vendorTypeId}
+    </if>
+    <if test="vendorPageRequest.vendorName != null and vendorPageRequest.vendorName != ''">
+      AND v.vendorName LIKE CONCAT('%',#{vendorPageRequest.vendorName},'%')
+    </if>
+    <if test="vendorPageRequest.vendorCode != null and vendorPageRequest.vendorCode != ''">
+      AND v.vendorCode LIKE CONCAT('%',#{vendorPageRequest.vendorCode},'%')
+    </if>
+    <if test="vendorPageRequest.provinceId != null and vendorPageRequest.provinceId != 0">
+      AND v.provinceId = #{vendorPageRequest.provinceId}
+    </if>
+    <if test="vendorPageRequest.cityId != null and vendorPageRequest.cityId != 0">
+      AND v.cityId = #{vendorPageRequest.cityId}
+    </if>
+    <if test="vendorPageRequest.countyId !=null and vendorPageRequest.countyId != 0">
+      AND v.countyId = #{vendorPageRequest.countyId}
+    </if>
+    <if test="vendorPageRequest.areaId !=null and vendorPageRequest.areaId != 0">
+      AND var.areaId = #{vendorPageRequest.areaId}
+      AND var.isDeleted = 'N'
+    </if>
+    <if test="vendorPageRequest.vendorStatus != null and vendorPageRequest.vendorStatus != '' and vendorPageRequest.vendorStatus != 'DELETE'">
+      AND v.vendorStatus = #{vendorPageRequest.vendorStatus}
+    </if>
+  </select>
+
+  <update id="batchUpdateStatus">
+      UPDATE t_vendor
+      SET
+      vendorStatus = #{vendorDto.vendorStatus},
+      modifyUserId = #{vendorDto.modifyUserId},
+      modifyUserName = #{vendorDto.modifyUserName}
+      WHERE
+      vendorId IN
+    <foreach collection="vendorDto.vendorIds" item="id" index="index"
+      open="(" close=")" separator=",">
+      #{id}
+    </foreach>
+  </update>
+
+  <select id="getBatchVendorByVendorCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM t_vendor
+    WHERE vendorStatus != 'DELETE' AND vendorCode=#{vendorCode}
+    LIMIT 1
+  </select>
+
+  <select id="getBatchVendorIds" resultType="com.frxs.merchant.common.dal.entity.Vendor">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM
+    t_vendor
+    WHERE 1=1
+    <if test="vendorIds != null and vendorIds.size != 0">
+      AND vendorId IN
+      <foreach collection="vendorIds" item="id" index="index"
+        open="(" close=")" separator=",">
+        #{id}
+      </foreach>
+    </if>
+  </select>
+  <select id="getBatchUnionPayMID" resultType="com.frxs.merchant.common.dal.entity.Vendor">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM
+    t_vendor
+    WHERE 1=1
+    <if test="unionPayMIDs != null and unionPayMIDs.size != 0">
+      AND unionPayMID IN
+      <foreach collection="unionPayMIDs" item="unionPayMID" index="index"
+        open="(" close=")" separator=",">
+        #{unionPayMID}
+      </foreach>
+    </if>
+  </select>
+  <select id="getBatchUnionPayCID" resultType="com.frxs.merchant.common.dal.entity.Vendor">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM
+    t_vendor
+    WHERE 1=1
+    <if test="unionPayCIDs != null and unionPayCIDs.size != 0">
+      AND unionPayCID IN
+      <foreach collection="unionPayCIDs" item="unionPayCID" index="index"
+               open="(" close=")" separator=",">
+        #{unionPayCID}
+      </foreach>
+    </if>
+  </select>
+  <select id="getList" resultType="com.frxs.merchant.common.dal.entity.VendorQy">
+    SELECT DISTINCT
+    v.vendorCode,
+    v.vendorName,
+    v.vendorShortName,
+    v.address,
+    v.contacts,
+    v.contactsTel,
+    v.vendorStatus,
+    v.bankAccountName,
+    v.bankName,
+    v.bankAccountNo,
+    v.bankNo,
+    v.unionPayMID,
+    v.unionPayCID,
+    (SELECT COUNT(1) FROM t_product p WHERE v.vendorId = p.vendorId AND p.skuStatus IN ('UP','DOWN')
+    <if test="vendorPageRequest.areaId !=null and vendorPageRequest.areaId != 0">
+      AND p.areaId = #{vendorPageRequest.areaId}
+    </if>) productCount,
+    (SELECT GROUP_CONCAT(vt.vendorTypeName) FROM t_vendor_type vt INNER JOIN t_vendor_type_ref vtf ON vt.vendorTypeId = vtf.vendorTypeId WHERE vtf.vendorId = v.vendorId AND vtf.isDeleted = 'N') vendorTypeName,
+    (SELECT GROUP_CONCAT(a.areaName) FROM t_area a INNER JOIN	t_vendor_area_ref var ON a.areaId = var.areaId WHERE var.vendorId = v.vendorId AND var.isDeleted = 'N') areaName
+    FROM t_vendor v
+    INNER JOIN t_vendor_type_ref vtf ON v.vendorId = vtf.vendorId
+    INNER JOIN t_vendor_area_ref var ON v.vendorId = var.vendorId
+    WHERE v.vendorStatus != 'DELETE'
+    AND v.vendorCode != '9999999'
+    <if test="vendorPageRequest.vendorTypeId != null">
+      AND vtf.vendorTypeId = #{vendorPageRequest.vendorTypeId}
+      AND vtf.isDeleted = 'N'
+    </if>
+    <if test="vendorPageRequest.vendorName != null and vendorPageRequest.vendorName != ''">
+      AND v.vendorName LIKE CONCAT('%',#{vendorPageRequest.vendorName},'%')
+    </if>
+    <if test="vendorPageRequest.vendorCode != null and vendorPageRequest.vendorCode != ''">
+      AND v.vendorCode LIKE CONCAT('%',#{vendorPageRequest.vendorCode},'%')
+    </if>
+    <if test="vendorPageRequest.provinceId != null and vendorPageRequest.provinceId != 0">
+      AND v.provinceId = #{vendorPageRequest.provinceId}
+    </if>
+    <if test="vendorPageRequest.cityId != null and vendorPageRequest.cityId != 0">
+      AND v.cityId = #{vendorPageRequest.cityId}
+    </if>
+    <if test="vendorPageRequest.countyId !=null and vendorPageRequest.countyId != 0">
+      AND v.countyId = #{vendorPageRequest.countyId}
+    </if>
+    <if test="vendorPageRequest.areaId !=null and vendorPageRequest.areaId != 0">
+      AND var.areaId = #{vendorPageRequest.areaId}
+      AND var.isDeleted = 'N'
+    </if>
+    <if test="vendorPageRequest.vendorStatus != null and vendorPageRequest.vendorStatus != '' and vendorPageRequest.vendorStatus != 'DELETE'">
+      AND v.vendorStatus = #{vendorPageRequest.vendorStatus}
+    </if>
+    ORDER BY v.vendorId DESC
+
+  </select>
+  <select id="getVendorListByVendorRequest"
+    resultType="com.frxs.merchant.common.dal.entity.Vendor">
+    SELECT
+    <include refid="Base_Column_List_Alias"/>
+    FROM t_vendor v
+    WHERE  v.vendorStatus != 'DELETE'
+    <if test="vendorRequest.vendorName != null and vendorRequest.vendorName != ''">
+      AND v.vendorName = #{vendorRequest.vendorName}
+    </if>
+    <if test="vendorRequest.vendorCode != null and vendorRequest.vendorCode != ''">
+      AND v.vendorCode = #{vendorRequest.vendorCode}
+    </if>
+    <if test="vendorRequest.contactsTel != null and vendorRequest.contactsTel != ''">
+      AND v.contactsTel = #{vendorRequest.contactsTel}
+    </if>
+    <if test="vendorRequest.vendorShortName != null and vendorRequest.vendorShortName != ''">
+      AND v.vendorShortName = #{vendorRequest.vendorShortName}
+    </if>
+    <if test="vendorRequest.unionPayCID != null and vendorRequest.unionPayCID != ''">
+      AND v.unionPayCID = #{vendorRequest.unionPayCID}
+    </if>
+    <if test="vendorRequest.unionPayMID != null and vendorRequest.unionPayMID != ''">
+      AND v.unionPayMID = #{vendorRequest.unionPayMID}
+    </if>
+  </select>
+</mapper>

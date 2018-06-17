@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.frxs.merchant.core.mapper.ParameterSettingMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.frxs.merchant.common.dal.entity.ParameterSetting">
+        <id column="id" property="id" />
+        <result column="paraCode" property="paraCode" />
+        <result column="paraName" property="paraName" />
+        <result column="paraValue" property="paraValue" />
+        <result column="paraDescription" property="paraDescription" />
+        <result column="sort" property="sort" />
+        <result column="createUserId" property="createUserId" />
+        <result column="createUserName" property="createUserName" />
+        <result column="modifyUserId" property="modifyUserId" />
+        <result column="modifyUserName" property="modifyUserName" />
+        <result column="areaId" property="areaId" />
+        <result column="areaName" property="areaName" />
+        <result column="tmCreate" property="tmCreate" />
+        <result column="tmSmp" property="tmSmp" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, paraCode, paraName, paraValue, paraDescription, sort, createUserId,
+        createUserName, modifyUserId, modifyUserName, areaId, areaName, tmCreate, tmSmp
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_parameter_setting a
+        where a.id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <select id="listParameterSetting" resultMap="BaseResultMap" parameterType = "com.frxs.merchant.common.dal.entity.ParameterSetting">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM t_parameter_setting a
+        WHERE 1=1
+        <if test="areaId != null ">
+            AND a.areaId = #{areaId}
+        </if>
+        <if test="paraCode != null and paraCode != '' ">
+            AND a.paraCode = #{paraCode}
+        </if>
+        ORDER BY id DESC
+    </select>
+
+    <select id="listParameterSettingArea" resultMap="BaseResultMap" parameterType = "com.frxs.merchant.common.dal.entity.ParameterSetting">
+        SELECT n.* FROM (
+        SELECT a.id,a.paraCode,a.paraName,a.paraValue,a.paraDescription,a.sort,a.areaId,a.areaName
+        FROM t_parameter_setting a
+        WHERE IFNULL(a.areaId,0)=#{areaId}
+        <if test="paraCode != null and paraCode != '' ">
+            AND a.paraCode=#{paraCode}
+        </if>
+        UNION ALL
+        SELECT b.id,b.paraCode,b.paraName,b.paraValue,b.paraDescription,b.sort,b.areaId,b.areaName
+        FROM t_parameter_setting b
+        LEFT JOIN t_parameter_setting a ON  b.paraCode=a.paraCode AND IFNULL(a.areaId,0)=#{areaId}
+        WHERE IFNULL(b.areaId,0)=0 AND a.paraCode IS NULL
+        <if test="paraCode != null and paraCode != '' ">
+            AND b.paraCode=#{paraCode}
+        </if>
+        ) n
+        ORDER BY n.sort,n.Id
+    </select>
+
+    <select id="getCountArea" parameterType="com.frxs.merchant.common.dal.entity.ParameterSetting" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM (
+        SELECT a.id,a.paraCode,a.paraName,a.paraValue,a.paraDescription,a.sort,a.areaId
+        FROM t_parameter_setting a
+        WHERE IFNULL(a.areaId,0)=#{areaId}
+        <if test="paraCode != null and paraCode != '' ">
+            AND a.paraCode=#{paraCode}
+        </if>
+        UNION ALL
+        SELECT b.id,b.paraCode,b.paraName,b.paraValue,b.paraDescription,b.sort,b.areaId
+        FROM t_parameter_setting b
+        LEFT JOIN t_parameter_setting a ON  b.paraCode=a.paraCode AND IFNULL(a.areaId,0)=#{areaId}
+        WHERE IFNULL(b.areaId,0)=0 AND a.paraCode IS NULL
+        <if test="paraCode != null and paraCode != '' ">
+            AND b.paraCode=#{paraCode}
+        </if>
+        ) n
+    </select>
+
+    <select id="getCount" parameterType="com.frxs.merchant.common.dal.entity.ParameterSetting" resultType="java.lang.Integer">
+        select
+        COUNT(1)
+        from t_parameter_setting a
+        WHERE 1=1
+        <if test="areaId != null ">
+            AND a.areaId = #{areaId}
+        </if>
+        <if test="paraCode != null and paraCode != '' ">
+            AND a.paraCode = #{paraCode}
+        </if>
+    </select>
+
+    <select id="getParameterSetting" resultMap="BaseResultMap" parameterType = "com.frxs.merchant.common.dal.entity.ParameterSetting">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM t_parameter_setting a
+        WHERE 1=1
+        <if test="areaId != null ">
+            AND a.areaId = #{areaId}
+        </if>
+        <if test="paraCode != null and paraCode != '' ">
+            AND a.paraCode = #{paraCode}
+        </if>
+    </select>
+
+    <!--依据参数取得系统参数-->
+    <select id="getParameterSettingByParaCode" resultMap="BaseResultMap" parameterType = "com.frxs.merchant.common.dal.entity.ParameterSetting">
+        SELECT n.* FROM (
+            SELECT a.id,a.paraCode,a.paraName,a.paraValue,a.paraDescription,a.sort,a.areaId
+            FROM t_parameter_setting a
+            WHERE IFNULL(a.areaId,0)=#{areaId}
+           <if test="paraCode != null and paraCode != '' ">
+             AND a.paraCode=#{paraCode}
+           </if>
+        UNION ALL
+            SELECT b.id,b.paraCode,b.paraName,b.paraValue,b.paraDescription,b.sort,b.areaId
+            FROM t_parameter_setting b
+            LEFT JOIN t_parameter_setting a ON  b.paraCode=a.paraCode AND IFNULL(a.areaId,0)=#{areaId}
+            WHERE IFNULL(b.areaId,0)=0 AND a.paraCode IS NULL
+            <if test="paraCode != null and paraCode != '' ">
+                AND b.paraCode=#{paraCode}
+            </if>
+        ) n
+        ORDER BY n.sort,n.Id
+    </select>
+
+</mapper>

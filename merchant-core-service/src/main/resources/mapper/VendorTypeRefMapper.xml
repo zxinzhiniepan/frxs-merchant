@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.frxs.merchant.core.mapper.VendorTypeRefMapper">
+  <resultMap id="BaseResultMap" type="com.frxs.merchant.common.dal.entity.VendorTypeRef">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="vendorId" jdbcType="BIGINT" property="vendorId" />
+    <result column="vendorTypeId" jdbcType="INTEGER" property="vendorTypeId" />
+    <result column="isDeleted" jdbcType="CHAR" property="isDeleted" />
+    <result column="tmCreate" jdbcType="TIMESTAMP" property="tmCreate" />
+    <result column="tmSmp" jdbcType="TIMESTAMP" property="tmSmp" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, vendorId, vendorTypeId, isDeleted, tmCreate, tmSmp
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_vendor_type_ref
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <update id="deleteByVendorTypeId">
+    UPDATE t_vendor_type_ref
+    SET isDeleted = #{isDeleted}
+    WHERE vendorTypeId = #{vendorTypeId}
+  </update>
+
+  <update id="deleteByVendorId">
+     UPDATE t_vendor_type_ref
+    SET isDeleted = #{isDeleted}
+    WHERE vendorId = #{vendorId}
+  </update>
+
+  <select id="getListByVendorId" resultType="java.lang.Integer">
+    SELECT vendorTypeId
+    FROM t_vendor_type_ref
+    WHERE vendorId = #{vendorId}
+    AND isDeleted = #{isDeleted}
+  </select>
+
+  <delete id="delByVendorId">
+    DELETE FROM t_vendor_type_ref
+    WHERE vendorId = #{vendorId}
+  </delete>
+
+  <insert id="addByVendorId" parameterType="java.util.List">
+      insert into t_vendor_type_ref
+      (vendorId,vendorTypeId,isDeleted,tmCreate)
+      values
+      <foreach collection="list" item="item" index="index" separator=",">
+        (
+        #{item.vendorId},#{item.vendorTypeId},#{item.isDeleted},#{item.tmCreate}
+        )
+      </foreach>
+  </insert>
+
+  <update id="batchVendorTypeByVendorIds">
+      UPDATE t_vendor_type_ref
+      SET
+      isDeleted = #{isDeleted}
+      WHERE
+      vendorId IN
+    <foreach collection="vendorIds" item="id" index="index"
+      open="(" close=")" separator=",">
+      #{id}
+    </foreach>
+  </update>
+</mapper>

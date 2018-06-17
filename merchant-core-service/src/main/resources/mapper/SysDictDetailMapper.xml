@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.frxs.merchant.core.mapper.SysDictDetailMapper">
+  <resultMap id="BaseResultMap" type="com.frxs.merchant.common.dal.entity.SysDictDetail">
+    <id column="dictDetailId" jdbcType="INTEGER" property="dictDetailId" />
+    <result column="dictCode" jdbcType="VARCHAR" property="dictCode" />
+    <result column="detailCode" jdbcType="VARCHAR" property="detailCode" />
+    <result column="dictValue" jdbcType="VARCHAR" property="dictValue" />
+    <result column="dictLabel" jdbcType="VARCHAR" property="dictLabel" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="modifyUserId" jdbcType="INTEGER" property="modifyUserId" />
+    <result column="modifyUserName" jdbcType="VARCHAR" property="modifyUserName" />
+    <result column="tmCreate" jdbcType="TIMESTAMP" property="tmCreate" />
+    <result column="tmSmp" jdbcType="TIMESTAMP" property="tmSmp" />
+    <result column="areaId" jdbcType="INTEGER" property="areaId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    dictDetailId,detailCode, dictCode, dictValue, dictLabel, sort, remark, modifyUserId,
+    modifyUserName, tmCreate, tmSmp
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_sys_dict_detail
+    where dictDetailId = #{dictDetailId,jdbcType=INTEGER}
+  </select>
+
+  <select id="listSysDictDetail" parameterType="com.frxs.merchant.service.api.dto.SysDictDetailDto" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_sys_dict_detail a
+    WHERE 1 = 1
+    <if test="dictCode != null and dictCode != '' ">
+      AND a.dictCode = #{dictCode}
+    </if>
+    <if test="areaId != null and areaId != '' ">
+      AND a.areaId = #{areaId}
+    </if>
+    ORDER BY a.dictDetailId DESC
+  </select>
+</mapper>

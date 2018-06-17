@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.frxs.merchant.core.mapper.AreaMapper">
+  <resultMap id="BaseResultMap" type="com.frxs.merchant.common.dal.entity.Area">
+    <id column="areaId" jdbcType="INTEGER" property="areaId" />
+    <result column="areaName" jdbcType="VARCHAR" property="areaName" />
+    <result column="provinceId" jdbcType="INTEGER" property="provinceId" />
+    <result column="cityId" jdbcType="INTEGER" property="cityId" />
+    <result column="countyId" jdbcType="INTEGER" property="countyId" />
+    <result column="mapX" jdbcType="REAL" property="mapX" />
+    <result column="mapY" jdbcType="REAL" property="mapY" />
+    <result column="isDelete" jdbcType="CHAR" property="isDelete" />
+    <result column="createUserId" jdbcType="BIGINT" property="createUserId" />
+    <result column="createUserName" jdbcType="VARCHAR" property="createUserName" />
+    <result column="modifyUserId" jdbcType="BIGINT" property="modifyUserId" />
+    <result column="modifyUserName" jdbcType="VARCHAR" property="modifyUserName" />
+    <result column="tmCreate" jdbcType="TIMESTAMP" property="tmCreate" />
+    <result column="tmSmp" jdbcType="TIMESTAMP" property="tmSmp" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    areaId, areaName, provinceId, cityId, countyId, mapX, mapY, isDelete, createUserId, 
+    createUserName, modifyUserId, modifyUserName, tmCreate, tmSmp
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_area
+    where areaId = #{areaId,jdbcType=INTEGER}
+  </select>
+
+  <select id="findByIsDelete" resultType="com.frxs.merchant.common.dal.entity.Area">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM t_area
+    WHERE isDelete = #{isdelete}
+  </select>
+
+  <select id="getByVendorId" resultType="com.frxs.merchant.common.dal.entity.Area">
+   SELECT
+	  a.areaId,
+	  a.areaName
+  FROM
+	  t_area a
+  WHERE
+	  a.areaId IN (
+		SELECT
+			var.areaId
+		FROM
+			t_vendor_area_ref var
+		WHERE
+			var.vendorId = #{vendorId}
+		AND
+		  var.isDeleted = 'N'
+	);
+
+  </select>
+</mapper>

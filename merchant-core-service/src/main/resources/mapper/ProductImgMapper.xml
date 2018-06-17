@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.frxs.merchant.core.mapper.ProductImgMapper">
+  <resultMap id="BaseResultMap" type="com.frxs.merchant.common.dal.entity.ProductImg">
+    <id column="productImgId" jdbcType="BIGINT" property="productImgId" />
+    <result column="productId" jdbcType="BIGINT" property="productId" />
+    <result column="originalImgUrl" jdbcType="VARCHAR" property="originalImgUrl" />
+    <result column="imgUrl60" jdbcType="VARCHAR" property="imgUrl60" />
+    <result column="imgUrl120" jdbcType="VARCHAR" property="imgUrl120" />
+    <result column="imgUrl200" jdbcType="VARCHAR" property="imgUrl200" />
+    <result column="imgUrl400" jdbcType="VARCHAR" property="imgUrl400" />
+    <result column="imgType" jdbcType="VARCHAR" property="imgType" />
+    <result column="createUserId" jdbcType="BIGINT" property="createUserId" />
+    <result column="createUserName" jdbcType="VARCHAR" property="createUserName" />
+    <result column="tmCreate" jdbcType="TIMESTAMP" property="tmCreate" />
+    <result column="tmSmp" jdbcType="TIMESTAMP" property="tmSmp" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    productImgId, productId, originalImgUrl, imgUrl60, imgUrl120, imgUrl200, imgUrl400, 
+    imgType, createUserId, createUserName, tmCreate, tmSmp
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_product_img
+    where productImgId = #{productImgId,jdbcType=BIGINT}
+  </select>
+
+  <insert id="insertBatch" parameterType="com.frxs.merchant.common.dal.entity.ProductImg">
+      INSERT  INTO t_product_img(
+      productId, originalImgUrl, imgUrl60, imgUrl120, imgUrl200, imgUrl400,
+      imgType, createUserId, createUserName, tmCreate
+      )VALUES
+      <foreach collection="list" separator="," item="item">
+        (
+        #{item.productId}, #{item.originalImgUrl}, #{item.imgUrl60}, #{item.imgUrl120}, #{item.imgUrl200}, #{item.imgUrl400},
+        #{item.imgType}, #{item.createUserId}, #{item.createUserName}, #{item.tmCreate}
+        )
+      </foreach>
+  </insert>
+</mapper>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.frxs.merchant.core.mapper.DistributionLineMapper">
+  <resultMap id="BaseResultMap" type="com.frxs.merchant.common.dal.entity.DistributionLine">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="lineName" jdbcType="VARCHAR" property="lineName" />
+    <result column="areaId" jdbcType="INTEGER" property="areaId" />
+    <result column="areaName" jdbcType="VARCHAR" property="areaName" />
+    <result column="warehouseId" jdbcType="INTEGER" property="warehouseId" />
+    <result column="warehouseName" jdbcType="VARCHAR" property="warehouseName" />
+    <result column="distributionClerkId" jdbcType="INTEGER" property="distributionClerkId" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="createUserId" jdbcType="BIGINT" property="createUserId" />
+    <result column="createUserName" jdbcType="VARCHAR" property="createUserName" />
+    <result column="modifyUserId" jdbcType="BIGINT" property="modifyUserId" />
+    <result column="modifyUserName" jdbcType="VARCHAR" property="modifyUserName" />
+    <result column="tmCreate" jdbcType="TIMESTAMP" property="tmCreate" />
+    <result column="tmSmp" jdbcType="TIMESTAMP" property="tmSmp" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, lineName, areaId, areaName, warehouseId, warehouseName, distributionClerkId, 
+    status, createUserId, createUserName, modifyUserId, modifyUserName, tmCreate, tmSmp
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_distribution_line
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <select id="listDistributionLine" parameterType="com.frxs.merchant.service.api.dto.DistributionLineDto" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_distribution_line a
+    WHERE a.status != 'DELETE'
+    <if test="areaId != null">
+      AND a.areaId = #{areaId}
+    </if>
+    <if test="lineName != null and lineName != '' ">
+      AND a.lineName LIKE CONCAT('%',#{lineName},'%')
+    </if>
+    <if test="distributionClerkId != null ">
+      AND a.distributionClerkId = #{distributionClerkId}
+    </if>
+    <if test="warehouseId != null">
+      AND a.warehouseId = #{warehouseId}
+    </if>
+    <if test="listWarehouse != null and listWarehouse.size != 0">
+      AND a.warehouseId in
+      <foreach collection="listWarehouse" item="item" index="index"
+                                   open="(" close=")" separator=",">
+      #{item}
+    </foreach>
+    </if>
+    ORDER BY a.id DESC
+  </select>
+
+  <select id="listAll" parameterType="com.frxs.merchant.common.dal.entity.DistributionLine" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_distribution_line a
+    WHERE a.status != 'DELETE'
+    <if test="areaId != null">
+      AND a.areaId = #{areaId}
+    </if>
+    <if test="status != null and status != '' ">
+      AND a.status = #{status}
+    </if>
+    <if test="warehouseId != null">
+      AND a.warehouseId = #{warehouseId}
+    </if>
+    <if test="lineName != null and lineName != '' ">
+      AND a.lineName = #{lineName}
+    </if>
+    ORDER BY a.id DESC
+  </select>
+
+  <select id="listDistributionLineByWarehouseIds" parameterType="com.frxs.merchant.common.dal.entity.DistributionLine" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_distribution_line a
+    WHERE a.status = 'NORMAL'
+      AND a.warehouseId in
+      <foreach collection="ids" item="item" index="index"
+               open="(" close=")" separator=",">
+        #{item}
+      </foreach>
+
+    ORDER BY a.id DESC
+  </select>
+
+  <select id="getCount" parameterType="com.frxs.merchant.service.api.dto.DistributionLineDto" resultType="java.lang.Integer">
+    select
+    COUNT(1)
+    from t_distribution_line a
+    WHERE a.status != 'DELETE'
+    <if test="areaId != null and areaId != '' ">
+      AND a.areaId = #{areaId}
+    </if>
+    <if test="lineName != null and lineName != '' ">
+      AND a.lineName LIKE CONCAT('%',#{lineName},'%')
+    </if>
+    <if test="distributionClerkId != null ">
+      AND a.distributionClerkId = #{distributionClerkId}
+    </if>
+    <if test="warehouseId != null ">
+      AND a.warehouseId = #{warehouseId}
+    </if>
+    <if test="listWarehouse != null and listWarehouse.size != 0">
+      AND a.warehouseId in
+      <foreach collection="listWarehouse" item="item" index="index"
+               open="(" close=")" separator=",">
+        #{item}
+      </foreach>
+    </if>
+  </select>
+
+  <update id="updateByIds">
+        update t_distribution_line a
+        set a.status = #{status}
+        WHERE
+        a.id IN
+        <foreach collection="ids" item="item" index="index"
+                 open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </update>
+
+  <select id="getDistributionLineByStoreId"
+    resultType="com.frxs.merchant.common.dal.entity.DistributionLine">
+     SELECT
+    dl.id,
+    dl.lineName
+    FROM t_distribution_line dl
+		INNER JOIN t_store_line sl ON sl.lineId = dl.id
+		INNER JOIN t_store s ON sl.storeId = s.storeId
+    WHERE s.storeId = #{storeId}
+  </select>
+</mapper>

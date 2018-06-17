@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.frxs.merchant.core.mapper.VendorAreaRefMapper">
+  <resultMap id="BaseResultMap" type="com.frxs.merchant.common.dal.entity.VendorAreaRef">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="vendorId" jdbcType="BIGINT" property="vendorId" />
+    <result column="areaId" jdbcType="INTEGER" property="areaId" />
+    <result column="isDeleted" jdbcType="CHAR" property="isDeleted" />
+    <result column="createUserId" jdbcType="BIGINT" property="createUserId" />
+    <result column="createUserName" jdbcType="VARCHAR" property="createUserName" />
+    <result column="modifyUserId" jdbcType="BIGINT" property="modifyUserId" />
+    <result column="modifyUserName" jdbcType="VARCHAR" property="modifyUserName" />
+    <result column="tmCreate" jdbcType="TIMESTAMP" property="tmCreate" />
+    <result column="tmSmp" jdbcType="TIMESTAMP" property="tmSmp" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, vendorId, areaId, isDeleted, createUserId, createUserName, modifyUserId, modifyUserName,
+    tmCreate, tmSmp
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_vendor_area_ref
+    where id = #{id}
+  </select>
+
+  <insert id="saveVendorArea">
+    insert into t_vendor_area_ref
+    (vendorId,areaId,isDeleted,createUserId,createUserName,modifyUserId,modifyUserName,tmCreate)
+    values
+    <foreach collection="list" item="item" index="index" separator=",">
+      (
+      #{item.vendorId},#{item.areaId},#{item.isDeleted},#{item.createUserId},#{item.createUserName},
+      #{item.modifyUserId},#{item.modifyUserName},#{item.tmCreate}
+      )
+    </foreach>
+
+  </insert>
+
+  <delete id="deleteVendorArea">
+    DELETE FROM t_vendor_area_ref
+    WHERE vendorId = #{vendorId}
+  </delete>
+
+  <update id="batchUpdateVendorAreaRefStatus">
+    UPDATE t_vendor_area_ref
+    SET
+    isDeleted = #{isDeleted}
+    WHERE
+    id IN
+    <foreach collection="vendorAreaRefIds" item="id" index="index"
+      open="(" close=")" separator=",">
+      #{id}
+    </foreach>
+  </update>
+
+  <update id="batchUpdateVendorAreaRef">
+    update t_vendor_area_ref
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="vendorId =case" suffix="end,">
+        <foreach collection="vendorAreaRefs" item="vendorAreaRef">
+          <if test="vendorAreaRef.vendorId!=null">
+            when id=#{vendorAreaRef.id} then #{vendorAreaRef.vendorId}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="areaId =case" suffix="end,">
+        <foreach collection="vendorAreaRefs" item="vendorAreaRef">
+          <if test="vendorAreaRef.areaId!=null">
+            when id=#{vendorAreaRef.id} then #{vendorAreaRef.areaId}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="isDeleted =case" suffix="end,">
+        <foreach collection="vendorAreaRefs" item="vendorAreaRef">
+          <if test="vendorAreaRef.isDeleted!=null">
+            when id=#{vendorAreaRef.id} then #{vendorAreaRef.isDeleted}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="createUserId =case" suffix="end,">
+        <foreach collection="vendorAreaRefs" item="vendorAreaRef">
+          <if test="vendorAreaRef.createUserId!=null">
+            when id=#{vendorAreaRef.id} then #{vendorAreaRef.createUserId}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="createUserName =case" suffix="end,">
+        <foreach collection="vendorAreaRefs" item="vendorAreaRef">
+          <if test="vendorAreaRef.createUserName!=null">
+            when id=#{vendorAreaRef.id} then #{vendorAreaRef.createUserName}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="modifyUserId =case" suffix="end,">
+        <foreach collection="vendorAreaRefs" item="vendorAreaRef">
+          <if test="vendorAreaRef.modifyUserId!=null">
+            when id=#{vendorAreaRef.id} then #{vendorAreaRef.modifyUserId}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="modifyUserName =case" suffix="end,">
+        <foreach collection="vendorAreaRefs" item="vendorAreaRef">
+          <if test="vendorAreaRef.modifyUserName!=null">
+            when id=#{vendorAreaRef.id} then #{vendorAreaRef.modifyUserName}
+          </if>
+        </foreach>
+      </trim>
+    </trim>
+    <where>
+      <foreach collection="vendorAreaRefs" separator="or" item="vendorAreaRef">
+        id = #{vendorAreaRef.id}
+      </foreach>
+    </where>
+  </update>
+</mapper>

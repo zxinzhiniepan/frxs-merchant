@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.frxs.merchant.core.mapper.OpLogMapper">
+  <resultMap id="BaseResultMap" type="com.frxs.merchant.common.dal.entity.OpLog">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="areaId" jdbcType="INTEGER" property="areaId" />
+    <result column="menuId" jdbcType="VARCHAR" property="menuId" />
+    <result column="menuName" jdbcType="VARCHAR" property="menuName" />
+    <result column="action" jdbcType="VARCHAR" property="action" />
+    <result column="operatorId" jdbcType="INTEGER" property="operatorId" />
+    <result column="operatorName" jdbcType="VARCHAR" property="operatorName" />
+    <result column="tmCreate" jdbcType="TIMESTAMP" property="tmCreate" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.frxs.merchant.common.dal.entity.OpLog">
+    <result column="remark" jdbcType="LONGVARCHAR" property="remark" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, wId, menuId, menuName, action, operatorId, operatorName, tmCreate
+  </sql>
+  <sql id="Blob_Column_List">
+    remark
+  </sql>
+</mapper>

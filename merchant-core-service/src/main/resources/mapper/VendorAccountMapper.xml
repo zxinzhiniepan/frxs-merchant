@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.frxs.merchant.core.mapper.VendorAccountMapper">
+  <resultMap id="BaseResultMap" type="com.frxs.merchant.common.dal.entity.VendorAccount">
+    <id column="accountId" jdbcType="BIGINT" property="accountId" />
+    <result column="accountNo" jdbcType="VARCHAR" property="accountNo" />
+    <result column="vendorId" jdbcType="BIGINT" property="vendorId" />
+    <result column="accountName" jdbcType="VARCHAR" property="accountName" />
+    <result column="accountMoile" jdbcType="VARCHAR" property="accountMoile" />
+    <result column="openId" jdbcType="VARCHAR" property="openId" />
+    <result column="openType" jdbcType="INTEGER" property="openType" />
+    <result column="weChatNo" jdbcType="VARCHAR" property="weChatNo" />
+    <result column="nickName" jdbcType="VARCHAR" property="nickName" />
+    <result column="headImage" jdbcType="VARCHAR" property="headImage" />
+    <result column="pwd" jdbcType="VARCHAR" property="pwd" />
+    <result column="pwdSalt" jdbcType="VARCHAR" property="pwdSalt" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="wechatLoginStatus" jdbcType="CHAR" property="wechatLoginStatus" />
+    <result column="tmLastLogin" jdbcType="TIMESTAMP" property="tmLastLogin" />
+    <result column="tmLastModifyPwd" jdbcType="TIMESTAMP" property="tmLastModifyPwd" />
+    <result column="createUserId" jdbcType="BIGINT" property="createUserId" />
+    <result column="createUserName" jdbcType="VARCHAR" property="createUserName" />
+    <result column="modifyUserId" jdbcType="BIGINT" property="modifyUserId" />
+    <result column="modifyUserName" jdbcType="VARCHAR" property="modifyUserName" />
+    <result column="tmCreate" jdbcType="TIMESTAMP" property="tmCreate" />
+    <result column="tmSmp" jdbcType="TIMESTAMP" property="tmSmp" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    accountId, accountNo, accountName, accountMoile, openId, openType, weChatNo, nickName, 
+    headImage, pwd, pwdSalt, status, wechatLoginStatus, tmLastLogin, tmLastModifyPwd, 
+    createUserId, createUserName, modifyUserId, modifyUserName, tmCreate, tmSmp
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_vendor_account
+    where accountId = #{accountId}
+  </select>
+
+  <update id="updateStatusByVendorId">
+    UPDATE t_vendor_account
+    SET status = #{vendor.vendorStatus},
+    modifyUserId = #{vendor.modifyUserId},
+    modifyUserName = #{vendor.modifyUserName}
+    WHERE vendorId = #{vendor.vendorId}
+  </update>
+
+  <update id="batchUpdateStatus">
+    UPDATE t_vendor_account
+    SET status = #{vendorDto.vendorStatus},
+    modifyUserId = #{vendorDto.modifyUserId},
+    modifyUserName = #{vendorDto.modifyUserName}
+    WHERE vendorId IN
+    <foreach collection="vendorDto.vendorIds" item="id" index="index"
+      open="(" close=")" separator=",">
+      #{id}
+    </foreach>
+  </update>
+</mapper>

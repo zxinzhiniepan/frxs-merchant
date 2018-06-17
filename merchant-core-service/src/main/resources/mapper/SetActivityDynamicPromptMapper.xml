@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.frxs.merchant.core.mapper.SetActivityDynamicPromptMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.frxs.merchant.common.dal.entity.SetActivityDynamicPrompt">
+        <result column="dynamicPromptId" property="dynamicPromptId" />
+        <result column="dynamicPromptName" property="dynamicPromptName" />
+        <result column="content" property="content" />
+        <result column="tmDisplayStart" property="tmDisplayStart" />
+        <result column="tmDisplayEnd" property="tmDisplayEnd" />
+        <result column="reminder" property="reminder" />
+        <result column="status" property="status" />
+        <result column="createUserId" property="createUserId" />
+        <result column="createUserName" property="createUserName" />
+        <result column="modifyUserId" property="modifyUserId" />
+        <result column="modifyUserName" property="modifyUserName" />
+        <result column="areaId" property="areaId" />
+        <result column="tmCreate" property="tmCreate" />
+        <result column="tmSmp" property="tmSmp" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        dynamicPromptId, dynamicPromptName, content, tmDisplayStart, tmDisplayEnd, reminder, status,
+        createUserId, createUserName, modifyUserId, modifyUserName, areaId, tmCreate, tmSmp
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_set_activity_dynamic_prompt
+        where dynamicPromptId = #{dynamicPromptId,jdbcType=INTEGER}
+    </select>
+
+    <select id="listSetActivityDynamicPrompt" parameterType="com.frxs.merchant.common.dal.entity.SetActivityDynamicPrompt" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_set_activity_dynamic_prompt
+        WHERE status != 'DELETE'
+        <if test="areaId != null ">
+            AND areaId = #{areaId}
+        </if>
+        ORDER BY dynamicPromptId DESC
+    </select>
+
+    <select id="getCount" parameterType="com.frxs.merchant.common.dal.entity.SetActivityDynamicPrompt" resultType="java.lang.Integer">
+        select
+        COUNT(1)
+        from t_set_activity_dynamic_prompt a
+        WHERE status != 'DELETE'
+        <if test="areaId != null ">
+            AND a.areaId = #{areaId}
+        </if>
+    </select>
+
+    <update id="updateByIds">
+        update t_set_activity_dynamic_prompt a
+        set a.status = #{status}
+        WHERE
+        a.dynamicPromptId IN
+        <foreach collection="ids" item="item" index="index"
+                 open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </update>
+
+    <select id="selectByTime" parameterType="com.frxs.merchant.common.dal.entity.SetActivityDynamicPrompt" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from
+        t_set_activity_dynamic_prompt a
+        where a.status = #{status}
+        and a.tmDisplayStart <![CDATA[<=]]> #{tmDisplayStart}
+        and a.tmDisplayEnd <![CDATA[>=]]> #{tmDisplayStart}
+        and a.areaId = #{areaId}
+    </select>
+
+    <select id="listSetActivityDynamicPromptByTimePeriod" parameterType="com.frxs.merchant.common.dal.entity.SetActivityDynamicPrompt" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_set_activity_dynamic_prompt a
+        WHERE a.status = 'NORMAL'
+        <if test="areaId != null">
+            AND a.areaId = #{areaId}
+        </if>
+        <if test="tmDisplayStart != null">
+            AND a.tmDisplayEnd <![CDATA[>=]]> #{tmDisplayStart}
+        </if>
+        <if test="tmDisplayEnd != null">
+            AND a.tmDisplayStart <![CDATA[<=]]> #{tmDisplayEnd}
+        </if>
+        ORDER BY a.dynamicPromptId DESC
+    </select>
+</mapper>

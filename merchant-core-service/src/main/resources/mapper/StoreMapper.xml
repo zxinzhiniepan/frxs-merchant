@@ -1,0 +1,509 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.frxs.merchant.core.mapper.StoreMapper">
+  <resultMap id="BaseResultMap" type="com.frxs.merchant.common.dal.entity.Store">
+    <id column="storeId" jdbcType="BIGINT" property="storeId" />
+    <result column="storeCode" jdbcType="VARCHAR" property="storeCode" />
+    <result column="areaId" jdbcType="INTEGER" property="areaId" />
+    <result column="areaName" jdbcType="VARCHAR" property="areaName" />
+    <result column="storeName" jdbcType="VARCHAR" property="storeName" />
+    <result column="storeSign" jdbcType="VARCHAR" property="storeSign" />
+    <result column="logoUrl" jdbcType="VARCHAR" property="logoUrl" />
+    <result column="provinceId" jdbcType="INTEGER" property="provinceId" />
+    <result column="cityId" jdbcType="INTEGER" property="cityId" />
+    <result column="countyId" jdbcType="INTEGER" property="countyId" />
+    <result column="regionId" jdbcType="INTEGER" property="regionId" />
+    <result column="warehouseId" jdbcType="INTEGER" property="warehouseId" />
+    <result column="warehouseName" jdbcType="VARCHAR" property="warehouseName" />
+    <result column="detailAddress" jdbcType="VARCHAR" property="detailAddress" />
+    <result column="mapX" jdbcType="REAL" property="mapX" />
+    <result column="mapY" jdbcType="REAL" property="mapY" />
+    <result column="contacts" jdbcType="VARCHAR" property="contacts" />
+    <result column="parentStoreId" jdbcType="BIGINT" property="parentStoreId" />
+    <result column="storeDeveloper" jdbcType="VARCHAR" property="storeDeveloper" />
+    <result column="storeStatus" jdbcType="VARCHAR" property="storeStatus" />
+    <result column="contactsTel" jdbcType="VARCHAR" property="contactsTel" />
+    <result column="wechatGroupName" jdbcType="VARCHAR" property="wechatGroupName" />
+    <result column="shopArea" jdbcType="VARCHAR" property="shopArea" />
+    <result column="busiLicenseFullName" jdbcType="VARCHAR" property="busiLicenseFullName" />
+    <result column="foodCirculationLicense" jdbcType="VARCHAR" property="foodCirculationLicense" />
+    <result column="busiLicenseFullNameImgSrc" jdbcType="VARCHAR" property="busiLicenseFullNameImgSrc" />
+    <result column="foodCirculationLicenseImgSrc" jdbcType="VARCHAR" property="foodCirculationLicenseImgSrc" />
+    <result column="bankAccountName" jdbcType="VARCHAR" property="bankAccountName" />
+    <result column="bankName" jdbcType="VARCHAR" property="bankName" />
+    <result column="bankAccountNo" jdbcType="VARCHAR" property="bankAccountNo" />
+    <result column="bankNo" jdbcType="VARCHAR" property="bankNo" />
+    <result column="unionPayMID" jdbcType="VARCHAR" property="unionPayMID" />
+    <result column="unionPayCID" jdbcType="VARCHAR" property="unionPayCID" />
+    <result column="withdrawalsType" jdbcType="VARCHAR" property="withdrawalsType" />
+    <result column="tmOnLine" jdbcType="DATE" property="tmOnLine" />
+    <result column="createUserName" jdbcType="VARCHAR" property="createUserName" />
+    <result column="createUserId" jdbcType="BIGINT" property="createUserId" />
+    <result column="modifyUserId" jdbcType="BIGINT" property="modifyUserId" />
+    <result column="modifyUserName" jdbcType="VARCHAR" property="modifyUserName" />
+    <result column="tmCreate" jdbcType="TIMESTAMP" property="tmCreate" />
+    <result column="tmSmp" jdbcType="TIMESTAMP" property="tmSmp" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.frxs.merchant.common.dal.entity.Store">
+    <result column="storeDescription" jdbcType="LONGVARCHAR" property="storeDescription" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    storeId, storeCode, areaId, areaName, storeName, storeSign, logoUrl, provinceId, cityId, countyId,
+    regionId, warehouseId, warehouseName, detailAddress, mapX, mapY, contacts, parentStoreId, 
+    storeDeveloper, storeStatus, contactsTel, wechatGroupName, shopArea, busiLicenseFullName, 
+    foodCirculationLicense, busiLicenseFullNameImgSrc, foodCirculationLicenseImgSrc, 
+    bankAccountName, bankName, bankAccountNo, bankNo, unionPayMID, unionPayCID, withdrawalsType, 
+    tmOnLine, createUserName, createUserId, modifyUserId, modifyUserName, tmCreate, tmSmp
+  </sql>
+
+  <sql id="Base_Column_List_Alias">
+    s.storeId, s.storeCode, s.areaId, s.areaName, s.storeName, s.storeSign, s.logoUrl, s.provinceId, s.cityId, s.countyId,
+    s.regionId, s.warehouseId, s.warehouseName, s.detailAddress, s.mapX, s.mapY, s.contacts, s.parentStoreId,
+    s.storeDeveloper, s.storeStatus, s.contactsTel, s.wechatGroupName, s.shopArea, s.busiLicenseFullName,
+    s.foodCirculationLicense, s.busiLicenseFullNameImgSrc, s.foodCirculationLicenseImgSrc,
+    s.bankAccountName, s.bankName, s.bankAccountNo, s.bankNo, s.unionPayMID, s.unionPayCID, s.withdrawalsType,
+    s.tmOnLine, s.createUserName, s.createUserId, s.modifyUserId, s.modifyUserName, s.tmCreate, s.tmSmp
+  </sql>
+  <sql id="Blob_Column_List">
+    storeDescription
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from t_store
+    where storeId = #{storeId,jdbcType=BIGINT}
+  </select>
+
+  <select id="getPageList" resultType="com.frxs.merchant.common.dal.entity.StoreQy">
+    SELECT
+    s.areaId,
+    s.areaName,
+    s.storeId,
+    s.storeCode,
+    s.storeName,
+    s.warehouseName,
+    s.detailAddress,
+    s.contacts,
+    s.storeDeveloper,
+    s.storeStatus,
+    s.contactsTel,
+    s.wechatGroupName,
+    s.tmOnLine,
+    sur.userId,
+    sur.userName,
+    dl.lineName,
+    sl.lineSort
+    FROM
+    t_store s
+    INNER JOIN t_store_line sl ON sl.storeId = s.storeId
+    INNER JOIN t_store_user_ref sur ON s.storeId = sur.storeId
+    LEFT JOIN  t_distribution_line dl ON dl.id = sl.lineId
+    WHERE
+    s.storeStatus != 'DELETE'
+    <if test="storePageRequest.storeStatus!= null and storePageRequest.storeStatus!= ''">
+      AND s.storeStatus = #{storePageRequest.storeStatus}
+    </if>
+    <if test="storePageRequest.areaId != null">
+      AND s.areaId = #{storePageRequest.areaId}
+    </if>
+    <if test="storePageRequest.warehouseId != null" >
+      AND s.warehouseId = #{storePageRequest.warehouseId}
+    </if>
+    <if test="storePageRequest.listWarehouse != null and storePageRequest.listWarehouse.size != 0">
+      AND
+      (s.warehouseId IN
+      <foreach collection="storePageRequest.listWarehouse" item="warehouseId" index="index"
+        open="(" close=")" separator=",">
+        #{warehouseId}
+      </foreach>
+      OR s.warehouseId IS NULL)
+    </if>
+    <if test="storePageRequest.lineId != null and storePageRequest.lineId != 0">
+      AND sl.lineId = #{storePageRequest.lineId}
+    </if>
+    <if test="storePageRequest.storeCode != null and storePageRequest.storeCode!= ''">
+      AND s.storeCode LIKE CONCAT('%',#{storePageRequest.storeCode},'%')
+    </if>
+    <if test="storePageRequest.storeName != null and storePageRequest.storeName!= ''">
+      AND s.storeName LIKE CONCAT('%',#{storePageRequest.storeName},'%')
+    </if>
+    <if test="storePageRequest.contacts != null and storePageRequest.contacts!= ''">
+      AND s.contacts LIKE CONCAT('%',#{storePageRequest.contacts},'%')
+    </if>
+    <if test="storePageRequest.userName != null and storePageRequest.userName!= ''">
+      AND sur.userName LIKE CONCAT('%',#{storePageRequest.userName},'%')
+    </if>
+    <if test="storePageRequest.provinceId != null and storePageRequest.provinceId != 0">
+      AND s.provinceId = #{storePageRequest.provinceId}
+    </if>
+    <if test="storePageRequest.cityId != null and storePageRequest.cityId != 0">
+      AND s.cityId = #{storePageRequest.cityId}
+    </if>
+    <if test="storePageRequest.countyId !=null and storePageRequest.countyId != 0">
+      AND s.countyId = #{storePageRequest.countyId}
+    </if>
+    ORDER BY IF(ISNULL(s.warehouseId),0,1) ASC,s.storeId DESC
+  </select>
+  <select id="getPageListNotOther"
+    resultType="com.frxs.merchant.common.dal.entity.StoreQy">
+    SELECT
+    ts.areaId,
+    ts.storeId,
+    ts.areaName,
+    ts.storeCode,
+    ts.storeName,
+    ts.warehouseName,
+    ts.detailAddress,
+    ts.contacts,
+    ts.storeDeveloper,
+    ts.storeStatus,
+    ts.contactsTel,
+    ts.wechatGroupName,
+    ts.tmOnLine,
+    sur.userId,
+    sur.userName,
+    dl.lineName,
+    sl.lineSort
+    FROM
+    (
+    SELECT
+    s.areaId,
+    s.storeId,
+    s.areaName,
+    s.storeCode,
+    s.storeName,
+    s.warehouseId,
+    s.warehouseName,
+    s.detailAddress,
+    s.contacts,
+    s.storeDeveloper,
+    s.storeStatus,
+    s.contactsTel,
+    s.wechatGroupName,
+    s.tmOnLine
+    FROM t_store s
+    WHERE s.storeStatus != 'DELETE'
+    <if test="storePageRequest.storeStatus!= null and storePageRequest.storeStatus!= ''">
+      AND s.storeStatus = #{storePageRequest.storeStatus}
+    </if>
+    <if test="storePageRequest.areaId != null">
+      AND s.areaId = #{storePageRequest.areaId}
+    </if>
+    <if test="storePageRequest.warehouseId != null" >
+      AND s.warehouseId = #{storePageRequest.warehouseId}
+    </if>
+    <if test="storePageRequest.listWarehouse != null and storePageRequest.listWarehouse.size != 0">
+      AND
+      (s.warehouseId IN
+      <foreach collection="storePageRequest.listWarehouse" item="warehouseId" index="index"
+        open="(" close=")" separator=",">
+        #{warehouseId}
+      </foreach>
+      OR s.warehouseId IS NULL)
+    </if>
+    <if test="storePageRequest.storeCode != null and storePageRequest.storeCode!= ''">
+      AND s.storeCode LIKE CONCAT('%',#{storePageRequest.storeCode},'%')
+    </if>
+    <if test="storePageRequest.storeName != null and storePageRequest.storeName!= ''">
+      AND s.storeName LIKE CONCAT('%',#{storePageRequest.storeName},'%')
+    </if>
+    <if test="storePageRequest.contacts != null and storePageRequest.contacts!= ''">
+      AND s.contacts LIKE CONCAT('%',#{storePageRequest.contacts},'%')
+    </if>
+    <if test="storePageRequest.provinceId != null and storePageRequest.provinceId != 0">
+      AND s.provinceId = #{storePageRequest.provinceId}
+    </if>
+    <if test="storePageRequest.cityId != null and storePageRequest.cityId != 0">
+      AND s.cityId = #{storePageRequest.cityId}
+    </if>
+    <if test="storePageRequest.countyId !=null and storePageRequest.countyId != 0">
+      AND s.countyId = #{storePageRequest.countyId}
+    </if>
+    ORDER BY IF(ISNULL(s.warehouseId),0,1) ASC,s.storeId DESC LIMIT #{m},#{n}
+    )ts
+    INNER JOIN t_store_line sl ON sl.storeId = ts.storeId
+    INNER JOIN t_store_user_ref sur ON ts.storeId = sur.storeId
+    LEFT JOIN  t_distribution_line dl ON dl.id = sl.lineId
+    ORDER BY IF(ISNULL(ts.warehouseId),0,1) ASC,ts.storeId DESC
+  </select>
+
+  <select id="getCount" resultType="java.lang.Integer">
+    SELECT
+    COUNT(1) FROM t_store s
+    INNER JOIN t_store_line sl ON sl.storeId = s.storeId
+    INNER JOIN t_store_user_ref sur ON s.storeId = sur.storeId
+    WHERE
+    s.storeStatus != 'DELETE'
+    <if test="storePageRequest.storeStatus!= null and storePageRequest.storeStatus!= ''">
+      AND s.storeStatus = #{storePageRequest.storeStatus}
+    </if>
+    <if test="storePageRequest.areaId != null">
+      AND s.areaId = #{storePageRequest.areaId}
+    </if>
+    <if test="storePageRequest.warehouseId != null" >
+      AND s.warehouseId = #{storePageRequest.warehouseId}
+    </if>
+    <if test="storePageRequest.listWarehouse != null and storePageRequest.listWarehouse.size != 0">
+      AND
+      (s.warehouseId IN
+      <foreach collection="storePageRequest.listWarehouse" item="warehouseId" index="index"
+        open="(" close=")" separator=",">
+        #{warehouseId}
+      </foreach>
+      OR s.warehouseId IS NULL)
+    </if>
+    <if test="storePageRequest.lineId != null">
+      AND sl.lineId = #{storePageRequest.lineId}
+    </if>
+    <if test="storePageRequest.storeCode != null and storePageRequest.storeCode!= ''">
+      AND s.storeCode LIKE CONCAT('%',#{storePageRequest.storeCode},'%')
+    </if>
+    <if test="storePageRequest.storeName != null and storePageRequest.storeName!= ''">
+      AND s.storeName LIKE CONCAT('%',#{storePageRequest.storeName},'%')
+    </if>
+    <if test="storePageRequest.contacts != null and storePageRequest.contacts!= ''">
+      AND s.contacts LIKE CONCAT('%',#{storePageRequest.contacts},'%')
+    </if>
+    <if test="storePageRequest.userName != null and storePageRequest.userName!= ''">
+      AND sur.userName LIKE CONCAT('%',#{storePageRequest.userName},'%')
+    </if>
+    <if test="storePageRequest.provinceId != null and storePageRequest.provinceId != 0">
+      AND s.provinceId = #{storePageRequest.provinceId}
+    </if>
+    <if test="storePageRequest.cityId != null and storePageRequest.cityId != 0">
+      AND s.cityId = #{storePageRequest.cityId}
+    </if>
+    <if test="storePageRequest.countyId !=null and storePageRequest.countyId != 0">
+      AND s.countyId = #{storePageRequest.countyId}
+    </if>
+  </select>
+
+  <select id="getCountNotOther" resultType="java.lang.Integer">
+    SELECT
+    COUNT(1) FROM t_store s
+    WHERE
+    s.storeStatus != 'DELETE'
+    <if test="storePageRequest.storeStatus!= null and storePageRequest.storeStatus!= ''">
+      AND s.storeStatus = #{storePageRequest.storeStatus}
+    </if>
+    <if test="storePageRequest.areaId != null">
+      AND s.areaId = #{storePageRequest.areaId}
+    </if>
+    <if test="storePageRequest.warehouseId != null" >
+      AND s.warehouseId = #{storePageRequest.warehouseId}
+    </if>
+    <if test="storePageRequest.listWarehouse != null and storePageRequest.listWarehouse.size != 0">
+      AND
+      (s.warehouseId IN
+      <foreach collection="storePageRequest.listWarehouse" item="warehouseId" index="index"
+        open="(" close=")" separator=",">
+        #{warehouseId}
+      </foreach>
+      OR s.warehouseId IS NULL)
+    </if>
+    <if test="storePageRequest.storeCode != null and storePageRequest.storeCode!= ''">
+      AND s.storeCode LIKE CONCAT('%',#{storePageRequest.storeCode},'%')
+    </if>
+    <if test="storePageRequest.storeName != null and storePageRequest.storeName!= ''">
+      AND s.storeName LIKE CONCAT('%',#{storePageRequest.storeName},'%')
+    </if>
+    <if test="storePageRequest.contacts != null and storePageRequest.contacts!= ''">
+      AND s.contacts LIKE CONCAT('%',#{storePageRequest.contacts},'%')
+    </if>
+    <if test="storePageRequest.provinceId != null and storePageRequest.provinceId != 0">
+      AND s.provinceId = #{storePageRequest.provinceId}
+    </if>
+    <if test="storePageRequest.cityId != null and storePageRequest.cityId != 0">
+      AND s.cityId = #{storePageRequest.cityId}
+    </if>
+    <if test="storePageRequest.countyId !=null and storePageRequest.countyId != 0">
+      AND s.countyId = #{storePageRequest.countyId}
+    </if>
+  </select>
+
+  <update id="batchUpdateStatus">
+      UPDATE t_store
+      SET
+      storeStatus = #{storeDto.storeStatus},
+      modifyUserId = #{storeDto.modifyUserId},
+      modifyUserName = #{storeDto.modifyUserName}
+      WHERE storeId IN
+    <foreach collection="storeDto.storeIds" item="id" index="index"
+             open="(" close=")" separator=",">
+      #{id}
+    </foreach>
+  </update>
+
+  <select id="getStoreList" resultType="com.frxs.merchant.common.dal.entity.Store">
+    SELECT
+    <include refid="Base_Column_List_Alias" />
+    FROM t_store s
+    WHERE 1=1
+    <if test="storeRequest.storeStatus!= null and storeRequest.storeStatus!= ''">
+      AND s.storeStatus = #{storeRequest.storeStatus}
+    </if>
+    <if test="storeRequest.tmOnLineStart != null and storeRequest.tmOnLineStart!= ''">
+      AND s.tmOnLine <![CDATA[ >= ]]> #{storeRequest.tmOnLineStart}
+    </if>
+    <if test="storeRequest.tmOnLineEnd != null and storeRequest.tmOnLineEnd!= ''">
+      AND s.tmOnLine <![CDATA[ <= ]]> #{storeRequest.tmOnLineEnd}
+    </if>
+    <if test="storeRequest.storeCode != null and storeRequest.storeCode!= ''">
+      AND s.storeCode LIKE CONCAT('%',#{storeRequest.storeCode},'%')
+    </if>
+    <if test="storeRequest.storeName != null and storeRequest.storeName!= ''">
+      AND s.storeName LIKE CONCAT('%',#{storeRequest.storeName},'%')
+    </if>
+    <if test="storeRequest.storeDeveloper != null and storeRequest.storeDeveloper!= ''">
+      AND s.storeDeveloper LIKE CONCAT('%',#{storeRequest.storeDeveloper},'%')
+    </if>
+  </select>
+
+  <select id="getStoreListByCodes" resultType="com.frxs.merchant.common.dal.entity.Store">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM t_store
+    WHERE 1=1
+    <if test="codes != null and codes.size > 0">
+    AND storeCode IN
+    <foreach collection="codes" item="code" index="index"
+      open="(" close=")" separator=",">
+      #{code}
+    </foreach>
+    </if>
+  </select>
+  <select id="getBatchVendorIds" resultType="com.frxs.merchant.common.dal.entity.Store">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM t_store
+    WHERE 1=1
+    <if test="storeIds != null and storeIds.size > 0">
+      AND storeId IN
+      <foreach collection="storeIds" item="id" index="index"
+        open="(" close=")" separator=",">
+        #{id}
+      </foreach>
+    </if>
+  </select>
+  <select id="getStoreByUserId" resultType="com.frxs.merchant.common.dal.entity.Store">
+    SELECT
+    <include refid="Base_Column_List_Alias"/>
+    FROM
+      t_store s
+    LEFT JOIN t_store_user_ref sur ON s.storeId = sur.storeId
+    WHERE sur.userId = #{userId};
+  </select>
+
+  <select id="getList" resultType="com.frxs.merchant.common.dal.entity.StoreQy">
+    SELECT
+    s.storeName,
+    s.storeCode,
+    s.storeId,
+    s.areaName,
+    s.contacts,
+    s.contactsTel,
+    s.detailAddress,
+    s.wechatGroupName,
+    s.storeDeveloper,
+    s.storeStatus,
+    s.warehouseName,
+    s.bankAccountName,
+    s.bankNo,
+    s.bankName,
+    s.bankAccountNo,
+    s.unionPayCID,
+    s.unionPayMID,
+    sur.userName,
+    dl.lineName,
+    sl.lineSort
+    FROM
+    t_store s
+    INNER JOIN t_store_line sl ON sl.storeId = s.storeId
+    INNER JOIN t_store_user_ref sur ON s.storeId = sur.storeId
+    LEFT JOIN  t_distribution_line dl ON dl.id = sl.lineId
+    WHERE
+    s.storeStatus != 'DELETE'
+    <if test="storePageRequest.storeStatus!= null and storePageRequest.storeStatus!= ''">
+      AND s.storeStatus = #{storePageRequest.storeStatus}
+    </if>
+    <if test="storePageRequest.areaId != null">
+      AND s.areaId = #{storePageRequest.areaId}
+    </if>
+    <if test="storePageRequest.warehouseId != null" >
+      AND s.warehouseId = #{storePageRequest.warehouseId}
+    </if>
+    <if test="storePageRequest.listWarehouse != null and storePageRequest.listWarehouse.size != 0">
+      AND
+      (s.warehouseId IN
+      <foreach collection="storePageRequest.listWarehouse" item="warehouseId" index="index"
+        open="(" close=")" separator=",">
+        #{warehouseId}
+      </foreach>
+      OR s.warehouseId IS NULL)
+    </if>
+    <if test="storePageRequest.lineId != null">
+      AND sl.lineId = #{storePageRequest.lineId}
+    </if>
+    <if test="storePageRequest.storeCode != null and storePageRequest.storeCode!= ''">
+      AND s.storeCode LIKE CONCAT('%',#{storePageRequest.storeCode},'%')
+    </if>
+    <if test="storePageRequest.storeName != null and storePageRequest.storeName!= ''">
+      AND s.storeName LIKE CONCAT('%',#{storePageRequest.storeName},'%')
+    </if>
+    <if test="storePageRequest.contacts != null and storePageRequest.contacts!= ''">
+      AND s.contacts LIKE CONCAT('%',#{storePageRequest.contacts},'%')
+    </if>
+    <if test="storePageRequest.userName != null and storePageRequest.userName!= ''">
+      AND sur.userName LIKE CONCAT('%',#{storePageRequest.userName},'%')
+    </if>
+    <if test="storePageRequest.provinceId != null and storePageRequest.provinceId != 0">
+      AND s.provinceId = #{storePageRequest.provinceId}
+    </if>
+    <if test="storePageRequest.cityId != null and storePageRequest.cityId != 0">
+      AND s.cityId = #{storePageRequest.cityId}
+    </if>
+    <if test="storePageRequest.countyId !=null and storePageRequest.countyId != 0">
+      AND s.countyId = #{storePageRequest.countyId}
+    </if>
+    ORDER BY IF(ISNULL(s.warehouseId),0,1) ASC,s.storeId DESC
+  </select>
+
+  <select id="getStoreListByLineIds" resultType="com.frxs.merchant.common.dal.entity.Store">
+    select
+    s.storeId,s.storeName,s.storeCode
+    from
+    t_store s inner join t_store_line tsl ON s.storeId = tsl.storeId
+    where tsl.lineId = #{id}
+    and s.storeStatus in('NORMAL','FROZEN')
+    ORDER BY tsl.lineSort
+  </select>
+  <select id="getStoreListByStoreRequest"
+    resultType="com.frxs.merchant.common.dal.entity.Store">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM t_store
+    WHERE storeStatus != 'DELETE'
+    <if test="storeRequest.storeCode != null and storeRequest.storeCode!= ''">
+      AND storeCode = #{storeRequest.storeCode}
+    </if>
+    <if test="storeRequest.storeName != null and storeRequest.storeName!= ''">
+      AND storeName = #{storeRequest.storeName}
+    </if>
+  </select>
+
+  <update id="updateStoreSignAndLog">
+    UPDATE t_store
+      <set>
+        <if test="store.storeSign != null">
+          storeSign = #{store.storeSign}
+        </if>
+        <if test="store.logoUrl != null">
+          logoUrl = #{store.logoUrl}
+        </if>
+      </set>
+      WHERE storeId = #{store.storeId}
+  </update>
+</mapper>

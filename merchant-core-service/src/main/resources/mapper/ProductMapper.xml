@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.frxs.merchant.core.mapper.ProductMapper">
+  <resultMap id="BaseResultMap" type="com.frxs.merchant.common.dal.entity.Product">
+    <id column="productId" jdbcType="BIGINT" property="productId"/>
+    <result column="productInfoId" jdbcType="BIGINT" property="productInfoId"/>
+    <result column="sku" jdbcType="VARCHAR" property="sku"/>
+    <result column="productName" jdbcType="VARCHAR" property="productName"/>
+    <result column="productTitle" jdbcType="VARCHAR" property="productTitle"/>
+    <result column="saleType" jdbcType="VARCHAR" property="saleType"/>
+    <result column="vendorId" jdbcType="BIGINT" property="vendorId"/>
+    <result column="areaId" jdbcType="BIGINT" property="areaId"/>
+    <result column="stock" jdbcType="DECIMAL" property="stock"/>
+    <result column="limitQty" jdbcType="DECIMAL" property="limitQty"/>
+    <result column="surplusStock" jdbcType="DECIMAL" property="surplusStock"/>
+    <result column="saleQty" jdbcType="DECIMAL" property="saleQty"/>
+    <result column="skuStatus" jdbcType="VARCHAR" property="skuStatus"/>
+    <result column="supplyAmt" jdbcType="DECIMAL" property="supplyAmt"/>
+    <result column="saleAmt" jdbcType="DECIMAL" property="saleAmt"/>
+    <result column="marketAmt" jdbcType="DECIMAL" property="marketAmt"/>
+    <result column="perServiceAmt" jdbcType="DECIMAL" property="perServiceAmt"/>
+    <result column="perCommission" jdbcType="DECIMAL" property="perCommission"/>
+    <result column="yieldly" jdbcType="VARCHAR" property="yieldly"/>
+    <result column="specType" jdbcType="VARCHAR" property="specType"/>
+    <result column="packageQty" jdbcType="DECIMAL" property="packageQty"/>
+    <result column="saleLimitTime" jdbcType="DECIMAL" property="saleLimitTime"/>
+    <result column="saleLimitTimeUnit" jdbcType="VARCHAR" property="saleLimitTimeUnit"/>
+    <result column="barCodes" jdbcType="VARCHAR" property="barCodes"/>
+    <result column="createUserId" jdbcType="BIGINT" property="createUserId"/>
+    <result column="createUserName" jdbcType="VARCHAR" property="createUserName"/>
+    <result column="modifyUserId" jdbcType="BIGINT" property="modifyUserId"/>
+    <result column="modifyUserName" jdbcType="VARCHAR" property="modifyUserName"/>
+    <result column="tmCreate" jdbcType="TIMESTAMP" property="tmCreate"/>
+    <result column="tmSmp" jdbcType="TIMESTAMP" property="tmSmp"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    productId, productInfoId, sku, productName, productTitle, saleType, vendorId, areaId, 
+    stock, limitQty,surplusStock, saleQty, skuStatus, saleAmt, supplyAmt, marketAmt, perServiceAmt, perCommission,
+    yieldly, specType, packageQty, saleLimitTime, saleLimitTimeUnit, barCodes, createUserId, 
+    createUserName, modifyUserId, modifyUserName, tmCreate, tmSmp
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from t_product
+    where productId = #{productId,jdbcType=BIGINT}
+  </select>
+
+  <select id="findProductByConditions" parameterType="Map" resultMap="BaseResultMap">
+    select
+    a.productId productId, a.productInfoId productInfoId, a.sku sku, a.productName productName, a.productTitle productTitle,
+    a.saleType saleType, a.vendorId vendorId, a.areaId areaId,a.stock stock,a.limitQty, a.surplusStock surplusStock, a.saleQty saleQty,
+    a.skuStatus skuStatus,a.saleAmt saleAmt, a.supplyAmt supplyAmt, a.marketAmt marketAmt, a.perServiceAmt perServiceAmt, a.perCommission perCommission,
+    a.yieldly yieldly, a.specType specType, a.packageQty packageQty, a.saleLimitTime saleLimitTime, a.saleLimitTimeUnit saleLimitTimeUnit,
+    a.barCodes barCodes, a.createUserId createUserId,a.createUserName createUserName, a.modifyUserId modifyUserId,
+    a.modifyUserName modifyUserName, a.tmCreate tmCreate, a.tmSmp tmSmp
+    from t_product a
+    <include refid="productWhere"/>
+    ORDER BY a.productId DESC
+    LIMIT #{pageNo},#{pageSize}
+  </select>
+
+  <select id="countProductList" parameterType="java.util.Map" resultType="java.lang.Integer">
+    SELECT COUNT(1) FROM t_product a
+    <include refid="productWhere"/>
+  </select>
+
+  <sql id="productWhere">
+    <if test="productList.brandName != null and productList.brandName != '' ">
+      INNER JOIN t_product_info b on a.productInfoId =b.productInfoId
+      and b.brandName LIKE concat(concat('%',#{productList.brandName}),'%')
+    </if>
+    WHERE 1 = 1 AND skuStatus IN ("DOWN","UP")
+    <if test="productList.productName != null and productList.productName != '' ">
+      AND a.productName like concat('%',#{productList.productName},'%')
+    </if>
+    <if test="productList.sku != null and productList.sku != '' ">
+      AND a.sku like concat('%',#{productList.sku},'%')
+    </if>
+    <if test="productList.skuStatus != null and productList.skuStatus != '' ">
+      AND a.skuStatus = #{productList.skuStatus}
+    </if>
+    <if test="productList.areaId != null ">
+      AND a.areaId = #{productList.areaId,jdbcType=BIGINT}
+    </if>
+  </sql>
+
+  <select id="findProductList" parameterType="Map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from t_product
+    <where>
+        `productId` in
+        <foreach collection="productIdList" item="id" open="(" separator="," close=")">
+          #{id,jdbcType=BIGINT}
+        </foreach>
+    </where>
+  </select>
+
+  <update id="updateSkuStatus" parameterType="Map" statementType="PREPARED">
+    UPDATE t_product SET
+    skuStatus = #{skuStatus},
+    modifyUserId = #{operateId,jdbcType=BIGINT},
+    modifyUserName = #{operateName}
+    <where>
+        `productId` in
+        <foreach collection="productIdList" item="id" open="(" separator="," close=")">
+          #{id,jdbcType=BIGINT}
+        </foreach>
+      <if test="areaId != null ">
+        AND areaId = #{areaId,jdbcType=BIGINT}
+      </if>
+    </where>
+  </update>
+</mapper>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.frxs.merchant.core.mapper.VendorTypeMapper">
+  <resultMap id="BaseResultMap" type="com.frxs.merchant.common.dal.entity.VendorType">
+    <id column="vendorTypeId" jdbcType="INTEGER" property="vendorTypeId" />
+    <result column="vendorTypeName" jdbcType="VARCHAR" property="vendorTypeName" />
+    <result column="isDeleted" jdbcType="CHAR" property="isDeleted" />
+    <result column="createUserId" jdbcType="BIGINT" property="createUserId" />
+    <result column="createUserName" jdbcType="VARCHAR" property="createUserName" />
+    <result column="modifyUserId" jdbcType="BIGINT" property="modifyUserId" />
+    <result column="modifyUserName" jdbcType="VARCHAR" property="modifyUserName" />
+    <result column="tmCreate" jdbcType="TIMESTAMP" property="tmCreate" />
+    <result column="tmSmp" jdbcType="TIMESTAMP" property="tmSmp" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    vendorTypeId, vendorTypeName, isDeleted, createUserId, createUserName, modifyUserId,
+    modifyUserName, tmCreate, tmSmp
+  </sql>
+
+  <sql id="Base_Column_List_Alias">
+    vt.vendorTypeId, vt.vendorTypeName, vt.isDeleted, vt.createUserId, vt.createUserName, vt.modifyUserId,
+    vt.modifyUserName, vt.tmCreate, vt.tmSmp
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_vendor_type
+    where vendorTypeId = #{vendorTypeId,jdbcType=INTEGER}
+  </select>
+
+  <select id="getList" resultType="com.frxs.merchant.common.dal.entity.VendorType"
+    parameterType="com.frxs.merchant.common.dal.entity.VendorType">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM t_vendor_type
+    WHERE 1=1
+    <if test="isDeleted != null and isDeleted != '' ">
+      AND isDeleted = #{isDeleted}
+    </if>
+  </select>
+  <select id="getListByVendorId"
+    resultType="com.frxs.merchant.common.dal.entity.VendorType">
+    SELECT
+    <include refid="Base_Column_List_Alias" />
+    FROM t_vendor_type vt,t_vendor_type_ref vtr
+    WHERE vt.vendorTypeId = vtr.vendorTypeId
+    AND vt.isDeleted = #{isDeleted}
+    AND vtr.isDeleted = #{isDeleted}
+    AND vtr.vendorId = #{vendorId}
+  </select>
+</mapper>

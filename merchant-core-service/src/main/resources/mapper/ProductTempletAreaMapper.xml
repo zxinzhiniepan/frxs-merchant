@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.frxs.merchant.core.mapper.ProductTempletAreaMapper">
+  <resultMap id="BaseResultMap" type="com.frxs.merchant.common.dal.entity.ProductTempletArea">
+    <id column="templetOpareaId" jdbcType="BIGINT" property="templetOpareaId" />
+    <result column="templetId" jdbcType="BIGINT" property="templetId" />
+    <result column="opAreaId" jdbcType="BIGINT" property="opAreaId" />
+    <result column="createUserId" jdbcType="BIGINT" property="createUserId" />
+    <result column="createUserName" jdbcType="VARCHAR" property="createUserName" />
+    <result column="tmCreate" jdbcType="TIMESTAMP" property="tmCreate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    templetOpareaId, templetId, opAreaId, createUserId, createUserName, tmCreate
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_product_templet_area
+    where templetOpareaId = #{templetOpareaId,jdbcType=BIGINT}
+  </select>
+</mapper>

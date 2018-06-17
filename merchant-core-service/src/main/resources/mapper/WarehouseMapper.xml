@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.frxs.merchant.core.mapper.WarehouseMapper">
+  <resultMap id="BaseResultMap" type="com.frxs.merchant.common.dal.entity.Warehouse">
+    <result column="warehouseId" jdbcType="INTEGER" property="warehouseId" />
+    <result column="warehouseName" jdbcType="VARCHAR" property="warehouseName" />
+    <result column="areaId" jdbcType="INTEGER" property="areaId" />
+    <result column="areaName" jdbcType="VARCHAR" property="areaName" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="tmCreate" jdbcType="TIMESTAMP" property="tmCreate" />
+    <result column="tmSmp" jdbcType="TIMESTAMP" property="tmSmp" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    warehouseId, warehouseName, areaId, areaName, address, tmCreate, tmSmp
+  </sql>
+  <select id="listWarehouse" parameterType="com.frxs.merchant.common.dal.entity.Warehouse" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_warehouse a
+    WHERE 1=1
+    <if test="areaId != null ">
+      AND a.areaId = #{areaId}
+    </if>
+    ORDER BY a.warehouseId DESC
+  </select>
+</mapper>
